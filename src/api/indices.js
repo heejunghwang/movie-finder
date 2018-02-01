@@ -37,22 +37,42 @@ module.exports = {
   },
 
   getMapping : function (indexName) {
+    return new Promise(function (resolve, reject) {
+      elasticsearchClient.indices.getMapping({
+        index: indexName,
+        expandWildcards : "all"
+      }, function (err, resp, status) {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(resp);
+        }
+      });
+    }).then(function (resp) {
+      return resp;
+    });
+  },
 
-    // return new Promise(function (resolve, reject) {
-    //   elasticsearchClient.indices.getFieldMapping({
-    //     index: indexName
-    //   }, function (err, resp, status) {
-    //     if (err) {
-    //       reject(err);
-    //     }
-    //     else {
-    //       console.log(resp)
-    //       resolve(resp);
-    //     }
-    //   });
-    // }).then(function (resp) {
-    //   return resp;
-    // });
+  putMapping : function (indexName, typeName, reqBody) {
+    return new Promise(function (resolve, reject) {
+      elasticsearchClient.indices.putMapping({
+        index: indexName,
+        type: typeName,
+        body: {
+          properties : reqBody
+        }
+      }, function (err, resp, status) {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(resp);
+        }
+      });
+    }).then(function (resp) {
+      return resp;
+    });
   }
 };
 

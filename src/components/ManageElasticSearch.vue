@@ -1,34 +1,43 @@
 <template>
-  <div class="container">
-
-    매핑
-    색인 시작
-    색인 삭제
-    <div class="card border-secondary mb-3" style="max-width: 18rem;">
-      <div class="card-header">Connection</div>
-      <div class="card-body text-secondary">
-        <div v-if="clientHealth !== null">
-          <h5 class="card-title">{{ clientHealth.cluster_name }}</h5>
-          <p class="card-text">status : {{ clientHealth.status }}</p>
-          <p class="card-text">number_of_nodes : {{ clientHealth.number_of_nodes }}</p>
-          <p class="card-text">number_of_data_nodes : {{ clientHealth.number_of_data_nodes }}</p>
+  <div>
+    <Menu></Menu>
+    <br>
+    <!-- container-->
+    <div class="container">
+      <div class="card border-secondary mb-3" style="max-width: 18rem;">
+        <div class="card-header">Connection</div>
+        <div class="card-body text-secondary">
+          <div v-if="clientHealth !== null">
+            <h5 class="card-title">{{ clientHealth.cluster_name }}</h5>
+            <p class="card-text">status : {{ clientHealth.status }}</p>
+            <p class="card-text">number_of_nodes : {{ clientHealth.number_of_nodes }}</p>
+            <p class="card-text">number_of_data_nodes : {{ clientHealth.number_of_data_nodes }}</p>
+          </div>
+        </div>
+        <div v-if="clientHealth == null">
+          CONNECTION_REFUSED
         </div>
       </div>
-      <div v-if="clientHealth == null">
-        CONNECTION_REFUSED
-      </div>
-    </div>
 
-    <div class="card border-secondary mb-3" style="max-width: 18rem;">
-      <div class="card-header">인덱스 관리</div>
-      <div class="card-body text-secondary">
-        <div v-for="item in indexList">
-          <span>{{item}}</span>
+      <div class="card border-secondary mb-3" style="max-width: 18rem;">
+        <div class="card-header">인덱스 관리</div>
+        <div class="card-body text-secondary">
+          <div v-for="item in indexList">
+            <span>{{item}}</span>
+          </div>
+          <router-link to="./create-index" class="btn btn-secondary">관리</router-link>
         </div>
-        <router-link to="./create-index" class="btn btn-secondary">관리</router-link>
       </div>
-    </div>
 
+      <div class="card border-secondary mb-3" style="max-width: 18rem;">
+        <div class="card-header">데이터 추가</div>
+        <div class="card-body text-secondary">
+          <router-link to="./create-index" class="btn btn-secondary">+</router-link>
+        </div>
+      </div>
+
+    </div>
+    <!--// end of container-->
   </div>
 
 </template>
@@ -72,7 +81,6 @@
       getIndexList : function () {
         let self = this;
         es_cat.getIndexList().then(function(result){
-          console.log(result)
           self.indexList = result;
         })
       },

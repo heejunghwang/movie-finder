@@ -1,40 +1,46 @@
 <template>
-  <div class="container">
+  <div>
+    <Menu></Menu>
 
-    <h1>관리</h1>
-    <div class="card border-secondary mb-3" style="max-width: 18rem;">
-      <div class="card-header"> 현재 인덱스 리스트</div>
-      <div class="card-body text-secondary">
-        <div v-for="item in indexList">
-          <span>{{item}}</span>
-          <span v-on:click="mappingIndex(item)"><img src="../assets/manage.png" style="width:13px"></span>
-          <span v-on:click="deleteIndex(item)"><img src="../assets/delete.png" style="width:13px"></span>
+    <!-- container-->
+    <div class="container">
 
+      <h1>관리</h1>
+      <div class="card border-secondary mb-3" style="max-width: 18rem;">
+        <div class="card-header"> 현재 인덱스 리스트</div>
+        <div class="card-body text-secondary">
+          <div v-for="item in indexList">
+            <span>{{item}}</span>
+            <span v-on:click="mappingIndex(item)"><img src="../assets/manage.png" style="width:13px"></span>
+            <span v-on:click="deleteIndex(item)"><img src="../assets/delete.png" style="width:13px"></span>
+
+          </div>
         </div>
       </div>
+
+      <form class="bs-example bs-example-form" data-example-id="input-group-with-checkbox-radio">
+        <div class="row">
+          <p>인덱스 이름</p>
+          <div class="col-lg-6">
+            <div class="input-group">
+              <input class="form-control" aria-label="Text input" v-model="indexName">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <p>Body</p>
+          <div class="col-lg-6">
+            <div class="form-group">
+              <textarea class="form-control" rows="35" cols="50" id="bodyReq">{{reqBody}}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <a href="javascript:;" class="btn btn-secondary router-link-exact-active router-link-active" @click="createNewIndex">생성</a>
+      </form>
     </div>
-
-    <form class="bs-example bs-example-form" data-example-id="input-group-with-checkbox-radio">
-      <div class="row">
-        <p>인덱스 이름</p>
-        <div class="col-lg-6">
-          <div class="input-group">
-            <input class="form-control" aria-label="Text input" v-model="indexName">
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <p>Body</p>
-        <div class="col-lg-6">
-          <div class="form-group">
-            <textarea class="form-control" rows="35" cols="50" id="bodyReq">{{reqBody}}</textarea>
-          </div>
-        </div>
-      </div>
-
-      <a href="javascript:;" class="btn btn-secondary router-link-exact-active router-link-active" @click="createNewIndex">생성</a>
-    </form>
+    <!-- // end of container-->
   </div>
 
 </template>
@@ -91,25 +97,6 @@
         };
         this.reqBody = JSON.stringify(defaultValue,null,2);
       },
-      replacer: function(match, pIndent, pKey, pVal, pEnd) {
-        var key = '<span class=json-key>';
-        var val = '<span class=json-value>';
-        var str = '<span class=json-string>';
-        var r = pIndent || '';
-        if (pKey)
-          r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
-        if (pVal)
-          r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
-        return r + (pEnd || '');
-      },
-      prettyPrint: function(obj) {
-        var self=this;
-        var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
-        return JSON.stringify(obj, null, 3)
-          .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
-          .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-          .replace(jsonLine, self.replacer);
-      },
       getIndexList : function () {
         let self = this;
         es_cat.getIndexList().then(function(result){
@@ -149,7 +136,10 @@
        * @param indexName
        */
       mappingIndex : function (indexName) {
-        router.push({ name: "MappingColumn" });
+        router.push({
+          name: "MappingColumn",
+          query : {indexName : indexName}
+        });
       }
     }
   }

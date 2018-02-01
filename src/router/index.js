@@ -4,12 +4,12 @@ import HelloWorld from '@/components/HelloWorld'
 import ManageElasticSearch from '@/components/ManageElasticSearch'
 import CreateIndex from '@/components/CreateIndex'
 import MappingColumn from '@/components/MappingColumn'
+import AddData from '@/components/AddData'
+import Menu from '@/components/Menu'
 
-
-
-// Import the styles directly. (Or you could add them via script tags.)
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+
 
 Vue.use(Router)
 
@@ -19,7 +19,7 @@ export default new Router({
     {
       path: '/',
       name: 'HelloWorld',
-      component: HelloWorld
+      component: HelloWorld, Menu
     },
     {
       path: '/manage',
@@ -36,5 +36,20 @@ export default new Router({
       name: 'MappingColumn',
       component: MappingColumn
     },
+    // {
+    //   path: '/add-data',
+    //   name: 'AddData',
+    //   component: AddData
+    // },
   ]
+})
+
+Vue.component('Menu', Menu);
+Vue.extend({
+  // data () {
+  //   return {
+  //     MenuName: ''
+  //   }
+  // }
+  // props : ['test']
 })

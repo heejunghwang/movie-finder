@@ -1,6 +1,11 @@
 <template>
+  <div>
+    <!-- Menu-->
+    <Menu></Menu>
+    <br>
     <!--container-->
     <div class="container">
+
       <!-- 사용자 검색 영역-->
       <div class="row">
         <div class="col-lg-6">
@@ -8,7 +13,6 @@
             <input type="text" class="form-control" placeholder="Search for...">
             <span class="input-group-btn">
               <button class="btn btn-secondary" type="button" @click="clickSearch">Go!</button>
-              <router-link to="./manage" class="btn btn-secondary">관리</router-link>
             </span>
           </div>
         </div>
@@ -17,7 +21,7 @@
       <br>
 
       <!-- 검색 결과-->
-      <table class="table table-striped">
+      <table class="table table-striped" v-if="movieResult !== ''">
         <th>이름</th>
         <th>장르</th>
         <tbody>
@@ -30,16 +34,17 @@
 
     </div>
     <!-- //end of container-->
-
+  </div>
 </template>
 
 <script>
 
-export default {
+
+  export default {
   name: 'HelloWorld',
   data () {
     return {
-      movieResult : [{
+      movieResult : ''/* [{
         "movieCd":"20173732",
         "movieNm":"살아남은 아이",
         "movieNmEn":"Last Child",
@@ -80,11 +85,12 @@ export default {
           "companys":[
 
           ]
-        }]
+        }]*/
     }
   },
   methods : {
     clickSearch : function () {
+      //TODO : 키보드 이벤트마다 검색
       console.log("클릭클릭")
     }
   }
