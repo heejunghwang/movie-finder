@@ -1,3 +1,3 @@
 module.exports = {
-  elasticsearch_host : "localhost:9200"
+  elasticsearch_host : "10.18.1.234:9200"
 }

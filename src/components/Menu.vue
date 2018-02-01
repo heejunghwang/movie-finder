@@ -2,7 +2,7 @@
   <div class="menu">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <router-link to="./" class="nav-link active" v-bind:class="{test : MenuName}">Search</router-link>
+        <router-link to="./" class="nav-link active">Search</router-link>
       </li>
       <li class="nav-item">
        <router-link to="./manage" class="nav-link disabled">관리</router-link>
