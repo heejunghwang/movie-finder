@@ -19,7 +19,7 @@ export default new Router({
     {
       path: '/',
       name: 'HelloWorld',
-      component: HelloWorld, Menu
+      component: HelloWorld
     },
     {
       path: '/manage',
@@ -36,20 +36,8 @@ export default new Router({
       name: 'MappingColumn',
       component: MappingColumn
     },
-    // {
-    //   path: '/add-data',
-    //   name: 'AddData',
-    //   component: AddData
-    // },
   ]
 })
 
+//TODO : 컴포넌트 등록 위치 변경
 Vue.component('Menu', Menu);
-Vue.extend({
-  // data () {
-  //   return {
-  //     MenuName: ''
-  //   }
-  // }
-  // props : ['test']
-})
