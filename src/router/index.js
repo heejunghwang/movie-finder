@@ -1,30 +1,30 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
-import ManageElasticSearch from '@/components/ManageElasticSearch'
+import Search from '@/components/Search'
+import Manage from '@/components/Manage'
 import CreateIndex from '@/components/CreateIndex'
 import MappingColumn from '@/components/MappingColumn'
-import AddData from '@/components/AddData'
 import Menu from '@/components/Menu'
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-
+import { Navbar } from 'bootstrap-vue/es/components';
 
 Vue.use(Router)
+Vue.use(Navbar);
 
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'Search',
+      component: Search
     },
     {
       path: '/manage',
-      name: 'ManageElasticSearch',
-      component: ManageElasticSearch
+      name: 'Manage',
+      component: Manage
     },
     {
       path: '/create-index',

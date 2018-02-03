@@ -48,7 +48,7 @@
   import es_cat from '../api/cat.js';
 
   export default {
-    name: 'ManageElasticSearch',
+    name: 'Manage',
     created() {
       this.getElasticsearchHealth()
       this.getIndexList()

@@ -1,4 +1,5 @@
 <template>
+
   <div>
     <!-- Menu-->
     <Menu></Menu>
@@ -41,10 +42,10 @@
 
 
   export default {
-  name: 'HelloWorld',
+  name: 'Search',
   data () {
     return {
-      movieResult : ''/* [{
+      movieResult :  [{
         "movieCd":"20173732",
         "movieNm":"살아남은 아이",
         "movieNmEn":"Last Child",
@@ -85,7 +86,7 @@
           "companys":[
 
           ]
-        }]*/
+        }]
     }
   },
   methods : {
