@@ -66,7 +66,7 @@
     },
     methods : {
       setDefaultValue : function () {
-        this.indexName = 'test'
+        this.indexName = 'movie'
         const defaultValue = {
           "settings": {
             "index" : {

@@ -1,19 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Search from '@/components/Search'
+import ImportData from '@/components/ImportData'
 import Manage from '@/components/Manage'
 import CreateIndex from '@/components/CreateIndex'
 import MappingColumn from '@/components/MappingColumn'
 import Menu from '@/components/Menu'
 
+//메뉴
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import { Navbar } from 'bootstrap-vue/es/components';
 
 Vue.use(Router)
-Vue.use(Navbar);
+Vue.use(Navbar)
 
-
+//TODO : URL 수정
 export default new Router({
   routes: [
     {
@@ -36,6 +38,12 @@ export default new Router({
       name: 'MappingColumn',
       component: MappingColumn
     },
+    {
+      path: '/data/import',
+      name: 'ImportData',
+      component: ImportData
+    },
+
   ]
 })
 

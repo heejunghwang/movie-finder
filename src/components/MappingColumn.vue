@@ -1,8 +1,7 @@
 <template>
   <div class="container">
-
+    <!-- TODO : 메뉴넣기-->
     <h1>{{indexName}} 컬럼 관리</h1>
-
 
     <form class="bs-example bs-example-form" data-example-id="input-group-with-checkbox-radio">
       <div class="row">

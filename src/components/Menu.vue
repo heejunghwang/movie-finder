@@ -26,6 +26,7 @@
         menuArray: [
           {name : 'Search', link : './', active : true},
           {name : 'Manage', link : './manage', active : false},
+          {name : 'ImportData', link : './data/import', active : false},
         ],
       }
     },
