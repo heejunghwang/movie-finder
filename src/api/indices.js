@@ -7,11 +7,10 @@ module.exports = {
         index: indexName,
         body:reqBody
       },function(err,resp,status) {
-        if(err) {
-          reject(err);
-        }
-        else {
+        if(status == '200') {
           resolve(resp);
+        }else{
+          reject(err);
         }
       });
     }).then(function (resp) {
@@ -24,11 +23,10 @@ module.exports = {
       elasticsearchClient.indices.delete({
         index: indexName
       }, function (err, resp, status) {
-        if (err) {
-          reject(err);
-        }
-        else {
+        if(status == '200') {
           resolve(resp);
+        }else{
+          reject(err);
         }
       });
     }).then(function (resp) {
@@ -42,11 +40,10 @@ module.exports = {
         index: indexName,
         expandWildcards : "all"
       }, function (err, resp, status) {
-        if (err) {
-          reject(err);
-        }
-        else {
+        if(status == '200') {
           resolve(resp);
+        }else{
+          reject(err);
         }
       });
     }).then(function (resp) {
@@ -63,11 +60,10 @@ module.exports = {
           properties : reqBody
         }
       }, function (err, resp, status) {
-        if (err) {
-          reject(err);
-        }
-        else {
+        if(status == '200') {
           resolve(resp);
+        }else{
+          reject(err);
         }
       });
     }).then(function (resp) {
