@@ -39,7 +39,7 @@ export default new Router({
       component: MappingColumn
     },
     {
-      path: '/data/import',
+      path: '/import-data',
       name: 'ImportData',
       component: ImportData
     },

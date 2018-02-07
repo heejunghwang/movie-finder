@@ -4,11 +4,11 @@
     <!-- Menu-->
     <Menu></Menu>
     <br>
-    <h1>MOVIE</h1>
+    <h1></h1>
     <!--container-->
     <div class="container">
-      Start import data to elasticsearch~
-      <button @click="startBulkInsert">START!!!</button>
+      <h1>Import Data from JSON file</h1>
+      <button @click="startBulkInsert" class="btn btn-link"> <img src="../assets/import-icon.png" style="width: 80px"></button>
 
     </div>
     <!-- //end of container-->
@@ -16,6 +16,8 @@
 </template>
 
 <script>
+
+  //TODO : 데이터 필터링해서 넣기
   import rawData from '../rawdata/searchMovieList_1.json';
   import es_bulk from '../api/bulk.js';
 
@@ -32,10 +34,9 @@
     methods : {
       getDataFromJSON : function () {
         this.movieResult = rawData.movieListResult.movieList;
-        //TODO : 몽고DB에 넣기
       },
       startBulkInsert : function () {
-        es_bulk.bulkIndex('movie', 'info');
+        es_bulk.bulkIndex('movie', 'info', this.movieResult);
       }
     }
   }

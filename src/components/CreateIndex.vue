@@ -13,7 +13,6 @@
             <span>{{item}}</span>
             <span v-on:click="mappingIndex(item)"><img src="../assets/manage.png" style="width:13px"></span>
             <span v-on:click="deleteIndex(item)"><img src="../assets/delete.png" style="width:13px"></span>
-
           </div>
         </div>
       </div>

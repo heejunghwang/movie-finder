@@ -1,12 +1,13 @@
 <template>
   <b-navbar toggleable="md" type="dark" variant="dark">
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-    <b-navbar-brand href="#">Movie Finder</b-navbar-brand>
+    <b-navbar-brand href="#"></b-navbar-brand>
     <b-collapse is-nav id="nav_collapse">
       <b-navbar-nav>
         <div v-for="item in menuArray">
           <router-link :to="item.link" class="nav-link" v-bind:class="{active : item.active}"><div>{{item.name}}</div></router-link>
         </div>
+        <br>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -26,7 +27,7 @@
         menuArray: [
           {name : 'Search', link : './', active : true},
           {name : 'Manage', link : './manage', active : false},
-          {name : 'ImportData', link : './data/import', active : false},
+          {name : 'ImportData', link : './import-data', active : false},
         ],
       }
     },
