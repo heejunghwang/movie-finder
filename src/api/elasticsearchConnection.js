@@ -14,4 +14,4 @@ const elasticsearchClient = new elasticsearch.Client({
   // log: 'trace'
 })
 
-module.exports = elasticsearchClient;
+export default elasticsearchClient;

@@ -5,7 +5,7 @@ import elasticsearchClient from './elasticsearchConnection.js';
  * @type {{getIndexInfoList: module.exports.getIndexInfoList, getIndexList: module.exports.getIndexList}}
  */
 
-module.exports = {
+export default {
   search : function (reqParam) {
     return new Promise(function (resolve, reject) {
       elasticsearchClient.search(reqParam, function (err,resp,status) {

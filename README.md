@@ -38,11 +38,10 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 /router : 라우팅 관련 폴더
  ~~~ 
 
-## 자바카페 블로그
-## 자바카페 git
-
 ## 그외
-* 사용한 형태소 분석기 : s은전한닢, 그외 한글 분석 플러그인
+* 사용한 형태소 분석기
+- s은전한닢
+- 한글 초성검색 자모 분석 플러그인 : https://github.com/punxism/elasticsearch-hangul-jamo-plugin
 
 ## 버전 정보
 * Java 8
@@ -52,3 +51,8 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ### 추가 자료 : TODO
 * 동영상
 * 캡쳐
+
+#### 지원 브라우저 : Chrome
+
+## 자바카페 블로그 : http://tech.javacafe.io/
+## 자바카페 git : https://github.com/JAVACAFE-STUDY

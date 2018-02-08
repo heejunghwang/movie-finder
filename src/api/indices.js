@@ -1,6 +1,6 @@
 import elasticsearchClient from './elasticsearchConnection.js';
 
-module.exports = {
+export default {
   createIndex : function (indexName, reqBody) {
     return new Promise(function (resolve, reject) {
       elasticsearchClient.indices.create({

@@ -5,7 +5,7 @@ import elasticsearchClient from './elasticsearchConnection.js';
  * @type {{getIndexInfoList: module.exports.getIndexInfoList, getIndexList: module.exports.getIndexList}}
  */
 
-module.exports = {
+export default {
   getIndexInfoList : function () {
       return new Promise(function (resolve, reject) {
         elasticsearchClient.cat.indices({format:'json'}, function (err,resp,status) {

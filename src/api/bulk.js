@@ -2,11 +2,10 @@
  * Created by hwang on 2018. 2. 4..
  */
 import elasticsearchClient from './elasticsearchConnection.js';
-import $ from 'jQuery'
 
 const each = require('foreach');
 
-module.exports = {
+export default {
   bulkIndex : function (indexName, typeName, bulkDocument) {
     let reqParam = new Array();
     let bulkFormat = {
@@ -22,7 +21,7 @@ module.exports = {
     });
     return this.startBulkInsert(reqParam).then(function (result) {
       if(result.errors == false){
-          console.log("finish to import data")
+        console.log("finish to import data")
       }else{
         console.log("fail to import data")
       }
