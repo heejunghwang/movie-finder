@@ -24,17 +24,18 @@
       </div>
 
       <div class="list-group">
-        <li class="list-group-item list-group-item-secondary">인덱스 리스트</li>
+        <li class="list-group-item list-group-item-secondary" style="font-weight: bold"><img src="../assets/list.png" style="width:20px;margin-right:5px">Index List</li>
         <div v-for="item in indexList">
           <a href="#" class="list-group-item list-group-item-action" >
-          {{ item }}
-          <router-link :to="'./mapping-index?indexName='+item"><img src="../assets/manage.png" style="width:15px;"></router-link>
-          <a v-on:click="deleteIndex(item)"><img src="../assets/delete.png" style="width:13px"></a>
+          <img src="../assets/index.icon.png" style="width:40px;margin-right: 10px">
+            <span style="font-weight: bold">{{ item }}</span>
+          <router-link :to="'./mapping-index?indexName='+item"><img src="../assets/manage.png" style="width:20px;"></router-link>
+          <a v-on:click="deleteIndex(item)"><img src="../assets/delete.png" style="width:15px"></a>
           </a>
         </div>
       </div>
-
-      <router-link to="./create-index" class="btn btn-light" style="float:right"><img src="../assets/plus.png" style="width:15px;"> 신규생성</router-link>
+      <br>
+      <router-link to="./create-index" class="btn btn-light" style="float:right; border-color:lightgrey"><img src="../assets/plus.png" style="width:15px;"> Create New Index</router-link>
 
     </div>
     <!--// end of container-->
@@ -107,7 +108,6 @@
        */
       mappingIndex : function (indexName) {
         router.push({
-          //name: "MappingColumn",
           path : '/mapping-index',
           query: {indexName: indexName},
         });

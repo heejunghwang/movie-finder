@@ -4,7 +4,7 @@ import Search from '@/components/Search'
 import ImportData from '@/components/ImportData'
 import Manage from '@/components/Manage'
 import CreateIndex from '@/components/CreateIndex'
-import MappingColumn from '@/components/MappingColumn'
+import MappingField from '@/components/MappingField'
 import Menu from '@/components/Menu'
 
 //메뉴
@@ -35,8 +35,8 @@ export default new Router({
     },
     {
       path: '/mapping-index',
-      name: 'MappingColumn',
-      component: MappingColumn
+      name: 'MappingField',
+      component: MappingField
     },
     {
       path: '/import-data',

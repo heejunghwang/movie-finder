@@ -4,38 +4,22 @@
 
     <!-- container-->
     <div class="container">
+      <br>
+      <h1>Create Index</h1>
 
-      <h1>관리</h1>
-      <div class="card border-secondary mb-3" style="max-width: 18rem;">
-        <div class="card-header"> 현재 인덱스 리스트</div>
-        <div class="card-body text-secondary">
-          <div v-for="item in indexList">
-            <span>{{item}}</span>
-            <span v-on:click="mappingIndex(item)"><img src="../assets/manage.png" style="width:13px"></span>
-            <span v-on:click="deleteIndex(item)"><img src="../assets/delete.png" style="width:13px"></span>
+      <form>
+        <div class="form-group row">
+          <label for="inputIndexName" class="col-sm-2 col-form-label">Index 이름</label>
+          <div class="col-sm-10">
+            <input class="form-control" aria-label="Text input" v-model="indexName" id="inputIndexName" readonly="true">
           </div>
         </div>
-      </div>
-
-      <form class="bs-example bs-example-form" data-example-id="input-group-with-checkbox-radio">
-        <div class="row">
-          <p>인덱스 이름</p>
-          <div class="col-lg-6">
-            <div class="input-group">
-              <input class="form-control" aria-label="Text input" v-model="indexName">
-            </div>
+        <div class="form-group row">
+          <label for="bodyReq" class="col-sm-2 col-form-label">Body</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" rows="35" cols="50" id="bodyReq">{{reqBody}}</textarea>
           </div>
         </div>
-
-        <div class="row">
-          <p>Body</p>
-          <div class="col-lg-6">
-            <div class="form-group">
-              <textarea class="form-control" rows="35" cols="50" id="bodyReq">{{reqBody}}</textarea>
-            </div>
-          </div>
-        </div>
-
         <a href="javascript:;" class="btn btn-secondary router-link-exact-active router-link-active" @click="createNewIndex">생성</a>
       </form>
     </div>
@@ -67,6 +51,65 @@
       setDefaultValue : function () {
         this.indexName = 'movie'
         const defaultValue = {
+          "settings" : {
+            "analysis": {
+              "tokenizer" : {
+                "seunjeon_default_tokenizer": {
+                  "type": "seunjeon_tokenizer",
+                  "index_eojeol": false,
+                  "user_words": ["낄끼+빠빠,-100", "c\\+\\+", "어그로", "버카충", "abc마트"]
+                }
+              },
+              "filter" : {
+                "hangul-jamo-filter" : {
+                  "type" : "hangul_jamo",
+                  "name": "jamo"
+                },
+                "hangul-chosung-filter" : {
+                  "type" : "hangul_chosung",
+                  "name": "chosung"
+                },
+                "edge100Gram": {
+                  "type": "edgeNGram",
+                  "min_gram": 1,
+                  "max_gram": 100,
+                  "side": "front"
+                }
+              },
+              "analyzer": {
+                "korean":{
+                  "type":"custom",
+                  "tokenizer":"seunjeon_default_tokenizer"
+                },
+                "hangul_jamo_analyzer": {
+                  "type": "custom",
+                  "tokenizer": "keyword",
+                  "filter": ["hangul-jamo-filter", "edge100Gram", "lowercase"]
+                },
+                "hangul_chosung_analyzer": {
+                  "type": "custom",
+                  "tokenizer": "keyword",
+                  "filter": ["hangul-chosung-filter", "edge100Gram", "lowercase"],
+                },
+                "hangul_jamo_search_analyzer": {
+                  "type": "custom",
+                  "tokenizer": "keyword",
+                  "filter": ["hangul-jamo-filter", "lowercase"]
+                },
+                "hangul_chosung_search_analyzer": {
+                  "type": "custom",
+                  "tokenizer": "keyword",
+                  "filter": ["lowercase"]
+                },
+              }
+            }
+          }
+        }
+
+
+
+          /** 은전한닢**/
+          /*{
           "settings": {
             "index" : {
               "analysis":{
@@ -93,7 +136,7 @@
               }
             }
           }
-        };
+        };*/
         this.reqBody = JSON.stringify(defaultValue,null,2);
       },
       getIndexList : function () {
@@ -106,7 +149,6 @@
        * 인덱스 생성
        */
       createNewIndex : function () {
-        //TODO : validation check : if there is same name index
         const indexName = this.indexName;
         const reqBody = this.reqBody;
         es_indices.createIndex(indexName, reqBody).then(function(result){
@@ -114,8 +156,6 @@
             window.location.reload(true);
           }
         });
-
-
       },
       /**
        * 인덱스 삭제
@@ -136,7 +176,7 @@
        */
       mappingIndex : function (indexName) {
         router.push({
-          name: "MappingColumn",
+          name: "MappingField",
           query : {indexName : indexName}
         });
       }

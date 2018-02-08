@@ -11,7 +11,7 @@
           <textarea class="form-control" rows="35" cols="30" readonly="true">{{ propertiesInfo }}</textarea>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-auto">
           <h3>{{indexName}} 필드 매핑</h3>
           <form>
             <div class="form-group row">
@@ -51,7 +51,7 @@
   import es_indices from '../api/indices.js';
 
   export default {
-    name: 'MappingColumn',
+    name: 'MappingField',
     created() {
       this.indexName = this.$route.query.indexName;
       this.initValue();
@@ -69,21 +69,45 @@
       initValue : function () {
         this.typeName = 'info'
 
-        const koreanAnalyzer = {
+        const jmoAnalyzer = {
           type: 'text',
-          analyzer : 'korean',
-          search_analyzer : 'korean'
+          analyzer : 'hangul_jamo_analyzer',
+          search_analyzer : 'hangul_jamo_search_analyzer'
+        }
+
+        const defaultSetting = {
+          type: 'keyword',
+          null_value: 'NULL',
+        }
+
+        const prdtYearForamt = {
+          type : 'integer',
+          null_value : '0'
+        }
+
+        const openDtForamt = {
+          type : 'integer',
+          null_value : '0'
+        }
+
+        const genreForamt = {
+          type: 'text',
+          analyzer : 'simple',
+          search_analyzer : 'simple',
+          fielddata : true
         }
 
         const fieldArray = {
-          movieNm : koreanAnalyzer,
-          movieNmEn : koreanAnalyzer,
-          typeNm : koreanAnalyzer,
-          prdtStatNm : koreanAnalyzer,
-          nationAlt : koreanAnalyzer,
-          genreAlt : koreanAnalyzer,
-          repNationNm : koreanAnalyzer,
-          repGenreNm : koreanAnalyzer
+          movieNm : jmoAnalyzer,
+          movieNmEn : jmoAnalyzer,
+          prdtYear : prdtYearForamt,
+          openDt : openDtForamt,
+          typeNm : defaultSetting,
+          prdtStatNm : defaultSetting,
+          nationAlt : defaultSetting,
+          genreAlt : genreForamt,
+          repNationNm : defaultSetting,
+          repGenreNm : defaultSetting
         }
 
         this.reqBody = JSON.stringify(fieldArray, undefined, 2);

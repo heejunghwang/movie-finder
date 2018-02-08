@@ -15,25 +15,28 @@ module.exports = {
         _type : typeName
       }
     };
-
     bulkFormat = JSON.stringify(bulkFormat)
-
     each(bulkDocument, function (value, key, array) {
-      //TODO : 10000건씩 잘라서 넣도록
-      //TODO : 지금 60000건이 안들어감
         reqParam.push(bulkFormat)
         reqParam.push(value)
     });
-
+    return this.startBulkInsert(reqParam).then(function (result) {
+      if(result.errors == false){
+          console.log("finish to import data")
+      }else{
+        console.log("fail to import data")
+      }
+    });
+  },
+  startBulkInsert : function (reqParam) {
     return new Promise(function (resolve, reject) {
       elasticsearchClient.bulk({
         body: reqParam
       },function(err,resp,status) {
-        if(err) {
-          reject(err);
-        }
-        else {
+        if(status == '200') {
           resolve(resp);
+        }else{
+          reject(err);
         }
       });
     }).then(function (resp) {

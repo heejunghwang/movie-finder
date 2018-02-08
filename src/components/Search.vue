@@ -11,17 +11,13 @@
         <div class="col-2 sidebar">
           <!-- TODO : UNIQUE 한것만 추출-->
           <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Dark
-              <span class="badge badge-primary badge-pill">14</span>
+            <li class="list-group-item d-flex justify-content-between align-items-center" @click="search(null)">
+              <span style="font-weight: bold">장르별</span>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Dark
-              <span class="badge badge-primary badge-pill">14</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              Dark
-              <span class="badge badge-primary badge-pill">14</span>
+            <li class="list-group-item d-flex justify-content-between align-items-center" v-bind:class="{active : item.active}" v-for="item in uniqueGenre" @click="clickGenre(item)">
+              <span v-if="typeof item.key !== 'undefined' && item.key !== null && item.key !== ''">{{item.key}}</span>
+              <span v-else>기타</span>
+              <span class="badge badge-primary badge-pill">{{commaNumber(item.doc_count)}}</span>
             </li>
           </ul>
         </div>
@@ -36,28 +32,33 @@
 
           You selected...
           <div class="input-group">
-            <button type="button" class="btn btn-outline-dark" style="margin-right: 5px">영화 x</button>
-            <button type="button" class="btn btn-outline-dark" style="margin-right: 5px">영화 x</button>
-            <button type="button" class="btn btn-outline-dark" style="margin-right: 5px">영화 x</button>
-            <button type="button" class="btn btn-outline-dark" style="margin-right: 5px">영화 x</button>
+            <div v-for="item in userSelected"> <button type="button" class="btn btn-outline-dark" style="margin-right: 5px">{{ item }} x</button> </div>
           </div>
 
-          <p style="float:right">총 : {{ total }} 건</p>
+          <p style="float:right">총 : {{ commaNumber(total) }} 건</p>
           <!-- 검색 결과-->
           <table class="table table-striped" v-if="movieResult !== ''">
             <th>이름</th>
             <th>장르</th>
+            <th>타입</th>
+            <th>개봉일</th>
+            <th>제작사</th>
             <tbody>
             <tr v-for="movie in movieResult">
               <td>{{ movie.movieNm }}</td>
               <td>{{ movie.genreAlt }}</td>
+              <td>{{ movie.typeNm }}</td>
+              <td>{{ movie.openDt }}</td>
+              <td><span v-if="movie.companys.length !== 0">{{ movie.companys[0].companyNm }}</span></td>
             </tr>
             <tr>
               <!-- TODO : 더보기 페이지 처리-->
-              <td colspan="2" v-if="movieResult !== '' && movieResult.length > 0">더보기</td>
+              <td colspan="5" v-if="movieResult !== '' && movieResult.length > 0">더보기</td>
             </tr>
             </tbody>
           </table>
+
+          <div style="float:right; font-size:smaller">데이터 출처 : 영화진흥위원회</div>
         </div>
         <!-- //end of col-->
       </div>
@@ -71,20 +72,26 @@
 
 <script>
 
-  //TODO : total 콤마 찍어주기
+  //TODO : 하이라이팅
+
 
   import es_search from '../api/search.js';
   const each = require('foreach');
+  const commaNumber = require('comma-number')
 
   export default {
   name: 'Search',
   created : function () {
     this.init();
+    this.getUniqueSearch();
   },
   data () {
     return {
+      indexName : 'movie',
       userQuery : '',
+      userSelected : [],
       total : 0,
+      uniqueGenre : '',
       movieResult : []/* [{
         "movieCd":"20173732",
         "movieNm":"살아남은 아이",
@@ -135,13 +142,13 @@
     },
     search : function (bodyReq) {
       const self = this;
-      const indexName = 'movie'
       if(typeof bodyReq === 'undefined' || bodyReq === null){
         bodyReq = '';
       }
 
+      //TODO : 데이터로 옮기기
       const reqParam = {
-        'index' : indexName,
+        'index' : this.indexName,
         'body' : bodyReq
       };
 
@@ -156,12 +163,77 @@
     clickSearch : function (e) {
       this.userQuery = e.target.value
       let bodyReq = {
-        query : {
-          match : {
-            movieNm : this.userQuery
+        sort : [
+          { 'openDt' : {order : 'asc'}}
+        ],
+        query: {
+          bool: {
+            should: {
+              match: {
+                movieNm: this.userQuery
+              }
+            },
           }
         }
       }
+      this.search(bodyReq)
+    },
+    commaNumber : function (number) {
+      return commaNumber(number)
+    },
+    getUniqueSearch : function () {
+      let bodyReq = {
+        size: 0,
+        aggs : {
+          uniq_genre : {
+            terms : { field : "genreAlt" }
+          }
+        }
+      }
+
+      const reqParam = {
+        'index' : this.indexName,
+        'body' : bodyReq
+      };
+
+      const self = this;
+      es_search.search(reqParam).then(function(result){
+        self.uniqueGenre = result.aggregations.uniq_genre.buckets
+      })
+    },
+    clickGenre : function (item) {
+      this.userSelected .push(item.key)
+      each(this.uniqueGenre, function (value, key, array) {
+        if(item.key === value.key){
+          if(value.active == true){
+            value.active = false;
+          }else{
+            value.active = true
+          }
+        }
+      })
+
+      //TODO : 멀티 장르로 검색할 수 있도록 수정
+      let bodyReq = {
+        sort : [
+          { 'openDt' : {order : 'asc'}}
+        ],
+        query: {
+          bool: {
+            must : {
+              match : {
+                genreAlt : item.key
+              }
+            },
+            should: {
+              match: {
+                movieNm: this.userQuery
+              }
+            },
+          }
+        }
+      }
+
       this.search(bodyReq)
     }
   }

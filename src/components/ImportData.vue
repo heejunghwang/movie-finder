@@ -9,7 +9,34 @@
     <div class="container">
       <h1>Import Data from JSON file</h1>
       <button @click="startBulkInsert" class="btn btn-link"> <img src="../assets/import-icon.png" style="width: 80px"></button>
+      <div style="background: lightgray">
+        <span style="font-weight:bold">SAMPLE JSON</span>
+        <code>
+          <pre>
+          {
+            "movieCd":"20173732",
+            "movieNm":"살아남은 아이",
+            "movieNmEn":"Last Child",
+            "prdtYear":"2017",
+            "openDt":"",
+            "typeNm":"장편",
+            "prdtStatNm":"기타",
+            "nationAlt":"한국",
+            "genreAlt":"드라마,가족",
+            "repNationNm":"한국",
+            "repGenreNm":"드라마",
+            "directors":[
+            {
+            "peopleNm":"신동석"
+            }
+            ],
+            "companys":[
 
+            ]
+          }
+          </pre>
+        </code>
+      </div>
     </div>
     <!-- //end of container-->
   </div>
@@ -17,7 +44,6 @@
 
 <script>
 
-  //TODO : 데이터 필터링해서 넣기
   import rawData from '../rawdata/searchMovieList_1.json';
   import es_bulk from '../api/bulk.js';
 
@@ -36,7 +62,9 @@
         this.movieResult = rawData.movieListResult.movieList;
       },
       startBulkInsert : function () {
-        es_bulk.bulkIndex('movie', 'info', this.movieResult);
+        const self = this;
+        es_bulk.bulkIndex('movie', 'info', self.movieResult);
+
       }
     }
   }
