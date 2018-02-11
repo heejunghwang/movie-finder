@@ -40,14 +40,14 @@
             <th>이름</th>
             <th>장르</th>
             <th>타입</th>
-            <th>개봉일</th>
+            <th>개봉년</th>
             <th>제작사</th>
             <tbody>
             <tr v-for="movie in movieResult">
               <td>{{ movie.movieNm }}</td>
               <td>{{ movie.genreAlt }}</td>
               <td>{{ movie.typeNm }}</td>
-              <td>{{ movie.openDt }}</td>
+              <td>{{ movie.prdtYear }}</td>
               <td><span v-if="movie.companys.length !== 0">{{ movie.companys[0].companyNm }}</span></td>
             </tr>
             <tr>
@@ -185,8 +185,8 @@
         size: 0,
         aggs : {
           uniq_genre : {
-            terms : { field : "genreAlt" }
-          }
+            terms : { field : "genreAlt" },
+          },
         }
       }
 
@@ -215,7 +215,7 @@
       //TODO : 멀티 장르로 검색할 수 있도록 수정
       let bodyReq = {
         sort : [
-          { 'openDt' : {order : 'asc'}}
+          { 'prdtYear' : {order : 'desc'}}
         ],
         query: {
           bool: {

@@ -62,6 +62,7 @@
         this.movieResult = rawData.movieListResult.movieList;
       },
       startBulkInsert : function () {
+        //TODO : 장르는 Array 형태로 색인하도록
         const self = this;
         es_bulk.bulkIndex('movie', 'info', self.movieResult);
 
