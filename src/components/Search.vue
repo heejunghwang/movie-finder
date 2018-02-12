@@ -6,22 +6,24 @@
     <br>
     <!--container-->
     <div class="container-fluid">
-      <!-- 사용자 검색 영역-->
+      <!-- 사이드바-->
       <div class="row">
-        <div class="col-2 sidebar">
+        <div class="col-2">
           <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center" @click="search(null)">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
               <span style="font-weight: bold">장르별</span>
+              <span style="font-size:smaller" @click="init()">초기화<img src="../assets/refresh.png" style="width: 20px"></span>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center" v-bind:class="{active : item.active}" v-for="item in uniqueGenre" @click="clickGenre(item)">
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-light" v-bind:class="{active : item.active}" v-for="item in uniqueGenre" @click="clickGenre(item)">
               <span v-if="typeof item.key !== 'undefined' && item.key !== null && item.key !== ''">{{item.key}}</span>
               <span v-else>기타</span>
-              <span class="badge badge-primary badge-pill">{{commaNumber(item.doc_count)}}</span>
+              <span class="badge badge-dark">{{commaNumber(item.doc_count)}}</span>
             </li>
           </ul>
         </div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-9">
+          <!-- 검색-->
           <div class="input-group" style="margin-bottom: 30px">
             <input type="text" class="form-control" placeholder="Search for..." v-on:input="clickSearch" v-bind:value="userQuery">
             <span class="input-group-btn">
@@ -29,30 +31,27 @@
             </span>
           </div>
 
-          You selected...
-          <div class="input-group">
-            <div v-for="item in userSelected"> <button type="button" class="btn btn-outline-dark" style="margin-right: 5px">{{ item }} x</button> </div>
-          </div>
-
-          <p style="float:right">총 : {{ commaNumber(total) }} 건</p>
           <!-- 검색 결과-->
+          <p style="float:right">총 : {{ commaNumber(total) }} 건</p>
           <table class="table table-striped" v-if="movieResult !== ''">
             <th>이름</th>
             <th>장르</th>
             <th>타입</th>
-            <th>개봉년</th>
+            <th>개봉년도</th>
             <th>제작사</th>
             <tbody>
             <tr v-for="movie in movieResult">
               <td>{{ movie.movieNm }}</td>
-              <td>{{ movie.genreAlt }}</td>
+              <td>
+                <span v-for="genre in movie.genreAlt">{{ genre }},</span>
+              </td>
               <td>{{ movie.typeNm }}</td>
               <td>{{ movie.prdtYear }}</td>
               <td><span v-if="movie.companys.length !== 0">{{ movie.companys[0].companyNm }}</span></td>
             </tr>
             <tr>
               <!-- TODO : 더보기 페이지 처리-->
-              <td colspan="5" v-if="movieResult !== '' && movieResult.length > 0">더보기</td>
+              <td colspan="5" v-if="movieResult !== '' && movieResult.length > 0" @click="searchMore">더보기</td>
             </tr>
             </tbody>
           </table>
@@ -137,12 +136,21 @@
   },
   methods : {
     init : function () {
-     this.search();
+      this.movieResult = [];
+      this.userSelected = [];
+      this.initGenre();
+      this.search('');
     },
     search : function (bodyReq) {
       const self = this;
       if(typeof bodyReq === 'undefined' || bodyReq === null){
-        bodyReq = '';
+        //TODO : SORT 통일화
+        bodyReq = {
+          sort : [
+            { 'prdtYear' : {order : 'desc'}},
+            {"_id": "desc"}
+          ]
+        }
       }
 
       //TODO : 데이터로 옮기기
@@ -160,10 +168,11 @@
       })
     },
     clickSearch : function (e) {
-      this.userQuery = e.target.value
+      this.userQuery = e.target.value;
       let bodyReq = {
         sort : [
-          { 'openDt' : {order : 'asc'}}
+          { 'prdtYear' : {order : 'desc'}},
+          {"_id": "desc"}
         ],
         query: {
           bool: {
@@ -183,9 +192,20 @@
     getUniqueSearch : function () {
       let bodyReq = {
         size: 0,
+        query: {
+          bool: {
+            must_not: {
+              term: {
+                genreAlt: "성인물"
+              }
+            }
+          }
+        },
         aggs : {
           uniq_genre : {
-            terms : { field : "genreAlt" },
+            terms : {
+              field : "genreAlt"
+            }
           },
         }
       }
@@ -200,8 +220,16 @@
         self.uniqueGenre = result.aggregations.uniq_genre.buckets
       })
     },
+    /**
+     * 장르 선택 초기화
+     */
+    initGenre : function () {
+      each(this.uniqueGenre, function (value, key, array) {
+        value.active = false;
+      })
+    },
     clickGenre : function (item) {
-      this.userSelected .push(item.key)
+      this.userSelected.push(item.key)
       each(this.uniqueGenre, function (value, key, array) {
         if(item.key === value.key){
           if(value.active == true){
@@ -224,6 +252,11 @@
                 genreAlt : item.key
               }
             },
+            must_not : {
+              match : {
+                genreAlt : "성인물"
+              }
+            },
             should: {
               match: {
                 movieNm: this.userQuery
@@ -234,6 +267,9 @@
       }
 
       this.search(bodyReq)
+    },
+    searchMore : function () {
+
     }
   }
 }

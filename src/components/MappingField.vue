@@ -90,13 +90,6 @@
           null_value : '0'
         }
 
-        const genreForamt = {
-          type: 'text',
-          analyzer : 'simple',
-          search_analyzer : 'simple',
-          fielddata : true
-        }
-
         const fieldArray = {
           movieNm : jmoAnalyzer,
           movieNmEn : jmoAnalyzer,
@@ -105,7 +98,7 @@
           typeNm : defaultSetting,
           prdtStatNm : defaultSetting,
           nationAlt : defaultSetting,
-          genreAlt : genreForamt,
+          genreAlt : defaultSetting,
           repNationNm : defaultSetting,
           repGenreNm : defaultSetting
         }

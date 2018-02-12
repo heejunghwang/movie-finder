@@ -50,6 +50,7 @@
     methods : {
       setDefaultValue : function () {
         this.indexName = 'movie'
+        //TODO : stopword는 파일로 빼기
         const defaultValue = {
           "settings" : {
             "analysis": {
@@ -79,7 +80,8 @@
               "analyzer": {
                 "korean":{
                   "type":"custom",
-                  "tokenizer":"seunjeon_default_tokenizer"
+                  "tokenizer":"seunjeon_default_tokenizer",
+                  "stopwords": [ "and", "the", "성인", "성인물","무삭제" ]
                 },
                 "hangul_jamo_analyzer": {
                   "type": "custom",
