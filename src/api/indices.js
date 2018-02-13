@@ -69,6 +69,26 @@ export default {
     }).then(function (resp) {
       return resp;
     });
+  },
+
+  analyze : function (indexName, analyzer, text) {
+    return new Promise(function (resolve, reject) {
+      elasticsearchClient.indices.analyze({
+        index: indexName,
+        body : {
+          analyzer : analyzer,
+          text : text
+        }
+      }, function (err, resp, status) {
+        if(status == '200') {
+          resolve(resp);
+        }else{
+          reject(err);
+        }
+      });
+    }).then(function (resp) {
+      return resp;
+    });
   }
 };
 

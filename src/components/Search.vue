@@ -8,11 +8,11 @@
     <div class="container-fluid">
       <!-- 사이드바-->
       <div class="row">
-        <div class="col-2">
+        <div class="col">
           <ul class="list-group">
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <span style="font-weight: bold">장르별</span>
-              <span style="font-size:smaller" @click="init()">초기화<img src="../assets/refresh.png" style="width: 20px"></span>
+              <span style="font-size:smaller" @click="initGenre()">초기화<img src="../assets/refresh.png" style="width: 20px"></span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-light" v-bind:class="{active : item.active}" v-for="item in uniqueGenre" @click="clickGenre(item)">
               <span v-if="typeof item.key !== 'undefined' && item.key !== null && item.key !== ''">{{item.key}}</span>
@@ -22,12 +22,14 @@
           </ul>
         </div>
 
+        <br>
+
         <div class="col-lg-9">
           <!-- 검색-->
           <div class="input-group" style="margin-bottom: 30px">
-            <input type="text" class="form-control" placeholder="Search for..." v-on:input="clickSearch" v-bind:value="userQuery">
+            <input type="text" class="form-control" placeholder="Search for..." v-on:input="typeKeyword" v-bind:value="userQuery">
             <span class="input-group-btn">
-              <button class="btn btn-secondary" type="button" @click="clickSearch">Go!</button>
+              <button class="btn btn-secondary" type="button" @click="typeKeyword">Go!</button>
             </span>
           </div>
 
@@ -70,9 +72,6 @@
 
 <script>
 
-  //TODO : 하이라이팅
-
-
   import es_search from '../api/search.js';
   const each = require('foreach');
   const commaNumber = require('comma-number')
@@ -81,14 +80,15 @@
   name: 'Search',
   created : function () {
     this.init();
-    this.getUniqueSearch();
   },
   data () {
     return {
       indexName : 'movie',
       userQuery : '',
-      userSelected : [],
+      userSelected : '',
       total : 0,
+      from : 0,
+      to : 20,
       uniqueGenre : '',
       movieResult : []/* [{
         "movieCd":"20173732",
@@ -137,27 +137,17 @@
   methods : {
     init : function () {
       this.movieResult = [];
-      this.userSelected = [];
-      this.initGenre();
-      this.search('');
+      this.startSearch();
+      this.getUniqueSearch();
     },
     search : function (bodyReq) {
       const self = this;
-      if(typeof bodyReq === 'undefined' || bodyReq === null){
-        //TODO : SORT 통일화
-        bodyReq = {
-          sort : [
-            { 'prdtYear' : {order : 'desc'}},
-            {"_id": "desc"}
-          ]
-        }
-      }
-
-      //TODO : 데이터로 옮기기
       const reqParam = {
         'index' : this.indexName,
         'body' : bodyReq
       };
+
+      console.log(bodyReq)
 
       self.movieResult = [];
       es_search.search(reqParam).then(function(result){
@@ -167,28 +157,13 @@
         })
       })
     },
-    clickSearch : function (e) {
-      this.userQuery = e.target.value;
-      let bodyReq = {
-        sort : [
-          { 'prdtYear' : {order : 'desc'}},
-          {"_id": "desc"}
-        ],
-        query: {
-          bool: {
-            should: {
-              match: {
-                movieNm: this.userQuery
-              }
-            },
-          }
-        }
-      }
-      this.search(bodyReq)
-    },
+
     commaNumber : function (number) {
       return commaNumber(number)
     },
+    /**
+     * 장르별 메뉴 조회
+     */
     getUniqueSearch : function () {
       let bodyReq = {
         size: 0,
@@ -227,49 +202,110 @@
       each(this.uniqueGenre, function (value, key, array) {
         value.active = false;
       })
+      this.userSelected = ''
+      this.startSearch()
     },
+    /**
+     * 장르 클릭
+     * @param item
+     */
     clickGenre : function (item) {
-      this.userSelected.push(item.key)
+      const self = this;
+      self.userSelected = item.key;
       each(this.uniqueGenre, function (value, key, array) {
         if(item.key === value.key){
           if(value.active == true){
             value.active = false;
+            self.userSelected = ''
           }else{
-            value.active = true
+            value.active = true;
           }
+        }else{
+          value.active = false;
         }
       })
 
-      //TODO : 멀티 장르로 검색할 수 있도록 수정
+      this.startSearch();
+    },
+
+    /**
+     * 키워드 검색 시
+     * @param e
+     */
+    typeKeyword : function (e) {
+      this.userQuery = e.target.value;
+      this.startSearch();
+    },
+    /**
+     * 검색을 한다
+     */
+    startSearch : function () {
+      let bodyReq = this.setSearchParam();
+      this.movieResult = []
+      this.search(bodyReq)
+    },
+    /**
+     * 검색 파라미터 세팅
+     * @returns {{from: number, size: number, sort: *[], query: {bool: {must_not: {match: {genreAlt: string}}}}}}
+     */
+    setSearchParam : function () {
       let bodyReq = {
+        from : 0,
+        size : 20,
         sort : [
-          { 'prdtYear' : {order : 'desc'}}
+          { 'prdtYear' : {order : 'desc'}},
+          {"_id": "desc"}
         ],
         query: {
           bool: {
-            must : {
-              match : {
-                genreAlt : item.key
-              }
-            },
+            // must : {
+            //   match : {
+            //     genreAlt : this.userSelected
+            //   }
+            // },
             must_not : {
               match : {
                 genreAlt : "성인물"
               }
             },
-            should: {
-              match: {
-                movieNm: this.userQuery
-              }
-            },
+            // should: {
+            //   match: {
+            //     movieNm: this.userQuery
+            //   }
+            // },
           }
         }
       }
 
-      this.search(bodyReq)
-    },
-    searchMore : function () {
+      if(this.userSelected !== '') {
+        let genreAltQuery = {
+          match: {
+            genreAlt: this.userSelected
+          }
+        };
+        bodyReq.query.bool.must = genreAltQuery;
+      }
 
+      if(this.userQuery !== '') {
+        let userQuery = {
+            match: {
+              movieNm: this.userQuery
+            }
+        };
+        bodyReq.query.bool.should = userQuery;
+      }
+
+      return bodyReq;
+    },
+    /**
+     * 더보기 클릭 시
+     */
+    searchMore : function () {
+      this.to = this.to + 20;
+      this.from = this.to;
+      //TODO : 선택 장르와 사용자 키워드 확인
+      //TODO : 선택 장르가 해제되거나 사용자 키워드가 바뀔때는 초기화
+      //this.search()
     }
   }
 }

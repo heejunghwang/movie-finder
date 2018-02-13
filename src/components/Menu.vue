@@ -28,6 +28,7 @@
           {name : 'Search', link : './', active : true},
           {name : 'Manage', link : './manage', active : false},
           {name : 'ImportData', link : './import-data', active : false},
+          {name : 'AnalyzeText', link : './analyze-text', active : false},
         ],
       }
     },

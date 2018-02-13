@@ -11,7 +11,7 @@
         <div class="form-group row">
           <label for="inputIndexName" class="col-sm-2 col-form-label">Index 이름</label>
           <div class="col-sm-10">
-            <input class="form-control" aria-label="Text input" v-model="indexName" id="inputIndexName" readonly="true">
+            <input class="form-control" aria-label="Text input" v-model="indexName" id="inputIndexName">
           </div>
         </div>
         <div class="form-group row">

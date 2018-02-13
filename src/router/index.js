@@ -5,6 +5,7 @@ import ImportData from '@/components/ImportData'
 import Manage from '@/components/Manage'
 import CreateIndex from '@/components/CreateIndex'
 import MappingField from '@/components/MappingField'
+import AnalyzeText from '@/components/AnalyzeText'
 import Menu from '@/components/Menu'
 
 //메뉴
@@ -42,6 +43,11 @@ export default new Router({
       path: '/import-data',
       name: 'ImportData',
       component: ImportData
+    },
+    {
+      path: '/analyze-text',
+      name: 'AnalyzeText',
+      component: AnalyzeText
     },
 
   ]
