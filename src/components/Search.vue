@@ -33,6 +33,9 @@
             </span>
           </div>
 
+          <div>혹시 이 영화를 찾고 계신가요??!</div>
+          <span class="badge badge-secondary" style="margin-right: 5px" v-for="movie in movieResult">{{ movie.movieNm }} ({{movie.prdtYear}})</span>
+
           <!-- 검색 결과-->
           <p style="float:right">총 : {{ commaNumber(total) }} 건</p>
           <table class="table table-striped" v-if="movieResult !== ''">
@@ -52,7 +55,6 @@
               <td><span v-if="movie.companys.length !== 0">{{ movie.companys[0].companyNm }}</span></td>
             </tr>
             <tr>
-              <!-- TODO : 더보기 페이지 처리-->
               <td colspan="5" v-if="movieResult !== '' && movieResult.length > 0" @click="searchMore">더보기</td>
             </tr>
             </tbody>
@@ -88,7 +90,7 @@
       userSelected : '',
       total : 0,
       from : 0,
-      to : 20,
+      size : 20,
       uniqueGenre : '',
       movieResult : []/* [{
         "movieCd":"20173732",
@@ -149,7 +151,6 @@
 
       console.log(bodyReq)
 
-      self.movieResult = [];
       es_search.search(reqParam).then(function(result){
         self.total = result.hits.total;
         each(result.hits.hits, function (value, key, array) {
@@ -199,6 +200,7 @@
      * 장르 선택 초기화
      */
     initGenre : function () {
+      this.initPage();
       each(this.uniqueGenre, function (value, key, array) {
         value.active = false;
       })
@@ -206,10 +208,17 @@
       this.startSearch()
     },
     /**
+     * 페이징 초기화
+     */
+    initPage : function () {
+      this.from = 0;
+    },
+    /**
      * 장르 클릭
      * @param item
      */
     clickGenre : function (item) {
+      this.initPage();
       const self = this;
       self.userSelected = item.key;
       each(this.uniqueGenre, function (value, key, array) {
@@ -233,6 +242,7 @@
      * @param e
      */
     typeKeyword : function (e) {
+      this.initPage();
       this.userQuery = e.target.value;
       this.startSearch();
     },
@@ -250,8 +260,8 @@
      */
     setSearchParam : function () {
       let bodyReq = {
-        from : 0,
-        size : 20,
+        from : this.from,
+        size : this.size,
         sort : [
           { 'prdtYear' : {order : 'desc'}},
           {"_id": "desc"}
@@ -301,11 +311,9 @@
      * 더보기 클릭 시
      */
     searchMore : function () {
-      this.to = this.to + 20;
-      this.from = this.to;
-      //TODO : 선택 장르와 사용자 키워드 확인
-      //TODO : 선택 장르가 해제되거나 사용자 키워드가 바뀔때는 초기화
-      //this.search()
+      this.from = this.from + this.size;
+      let bodyReq = this.setSearchParam();
+      this.search(bodyReq)
     }
   }
 }
