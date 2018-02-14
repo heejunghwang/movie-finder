@@ -26,15 +26,15 @@
 
         <div class="col-lg-9">
           <!-- 검색-->
-          <div class="input-group" style="margin-bottom: 30px">
-            <input type="text" class="form-control" placeholder="Search for..." v-on:input="typeKeyword" v-bind:value="userQuery">
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search for..." v-on:input="typeKeyword" v-bind:value="userQuery" @blur="focusOut" @keydown="moveAutocopleteItem">
             <span class="input-group-btn">
               <button class="btn btn-secondary" type="button" @click="typeKeyword">Go!</button>
             </span>
           </div>
-
-          <div>혹시 이 영화를 찾고 계신가요??!</div>
-          <span class="badge badge-secondary" style="margin-right: 5px" v-for="movie in movieResult">{{ movie.movieNm }} ({{movie.prdtYear}})</span>
+          <ul class="suggestion">
+            <li v-for="movie in movieResult" @click="selectAutocompleteKeyword(movie)">{{ movie.movieNm }} ({{movie.prdtYear}})</li>
+          </ul>
 
           <!-- 검색 결과-->
           <p style="float:right">총 : {{ commaNumber(total) }} 건</p>
@@ -139,7 +139,7 @@
   methods : {
     init : function () {
       this.movieResult = [];
-      this.startSearch();
+      // this.startSearch();
       this.getUniqueSearch();
     },
     search : function (bodyReq) {
@@ -314,8 +314,40 @@
       this.from = this.from + this.size;
       let bodyReq = this.setSearchParam();
       this.search(bodyReq)
+    },
+    /**
+     * 자동완성 포커스 아웃 시
+     */
+    focusOut : function () {
+      //TODO : 자동완성 포커스 벗어낫을때 suggestion 초기화
+      console.log("포커스 아웃")
+    },
+    moveAutocopleteItem : function (e) {
+      //TODO : 키보드 움직였을 때
+      //left
+      if(event.keyCode == 37) {
+        console.log("left")
+      }
+      //top
+      else if(event.keyCode == 38) {
+        console.log("top")
+      }
+      //right
+      else if(event.keyCode == 39) {
+        console.log("right")
+      }
+      //bottom
+      else if(event.keyCode == 40) {
+        console.log("bottom")
+      }
+    },
+    selectAutocompleteKeyword : function (movie) {
+      this.userQuery = movie.movieNm
+      //TODO : 자동완성 영역 없애기
+      this.startSearch();
     }
   }
+
 }
 
 
@@ -323,5 +355,21 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .suggestion {
+    list-style-type: none;
+    margin-right: 55px;
+    padding: 0;
+    border : 1px solid lightgray;
+    text-align: left;
+    font-size:smaller;
+  }
 
+  .suggestion li {
+    margin:10px 20px;
+    border-bottom: 1px solid lightgray;
+  }
+
+  .suggestion li:last-child {
+    border: none;
+  }
 </style>
