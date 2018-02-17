@@ -15,7 +15,7 @@
 
       <div class="form-group">
         <small id="emailHelp" class="form-text text-muted">WRITE SOMETHING FOR TESTING ANALYZER</small>
-        <textarea class="form-control" rows="3" cols="10">{{ testText }}</textarea>
+        <textarea class="form-control" rows="3" cols="10" v-model="testText">{{ testText }}</textarea>
       </div>
 
       <br>

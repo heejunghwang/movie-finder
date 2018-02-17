@@ -14,9 +14,8 @@
               <span style="font-weight: bold">장르별</span>
               <span style="font-size:smaller" @click="initGenre()">초기화<img src="../assets/refresh.png" style="width: 20px"></span>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-light" v-bind:class="{active : item.active}" v-for="item in uniqueGenre" @click="clickGenre(item)">
-              <span v-if="typeof item.key !== 'undefined' && item.key !== null && item.key !== ''">{{item.key}}</span>
-              <span v-else>기타</span>
+            <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-action list-group-item-light" v-if="typeof item.key !== 'undefined' && item.key !== null && item.key !== ''" v-bind:class="{active : item.active}" v-for="item in uniqueGenre" @click="clickGenre(item)">
+              <span>{{item.key}}</span>
               <span class="badge badge-dark">{{commaNumber(item.doc_count)}}</span>
             </li>
           </ul>
@@ -28,7 +27,7 @@
           <div v-on-clickaway="focusOut">
             <!-- 검색-->
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for..." v-on:input="typeKeyword" v-bind:value="userQuery" @keydown="moveAutocopleteItem"> <!-- @blur="focusOut" -->
+              <input type="text" class="form-control" placeholder="Search for..." v-on:input="typeKeyword" v-bind:value="userQuery" @keydown="moveAutocopleteItem" v-on:keyup.enter="goSearch">
               <span class="input-group-btn">
                 <button class="btn btn-secondary" type="button" @click="goSearch">Go!</button>
               </span>
@@ -40,25 +39,27 @@
           </div>
 
           <!-- 검색 결과-->
-          <p style="float:right">총 : {{ commaNumber(total) }} 건</p>
           <table class="table table-striped" v-if="movieResult !== ''">
             <th>이름</th>
+            <th>영문이름</th>
             <th>장르</th>
             <th>타입</th>
             <th>개봉년도</th>
-            <th>제작사</th>
+            <th>Score</th>
+
             <tbody>
             <tr v-for="movie in movieResult">
               <td>{{ movie.movieNm }}</td>
+              <td>{{ movie.movieNmEn }}</td>
               <td>
                 <span v-for="genre in movie.genreAlt">{{ genre }},</span>
               </td>
               <td>{{ movie.typeNm }}</td>
               <td>{{ movie.prdtYear }}</td>
-              <td><span v-if="movie.companys.length !== 0">{{ movie.companys[0].companyNm }}</span></td>
+              <td>{{ movie._score }}</td>
             </tr>
             <tr>
-              <td colspan="5" v-if="movieResult !== '' && movieResult.length > 0" @click="searchMore">더보기</td>
+              <td colspan="6" v-if="movieResult !== '' && movieResult.length > 0"><button class="btn btn-dark" @click="searchMore">더보기</button></td>
             </tr>
             </tbody>
           </table>
@@ -157,12 +158,11 @@
         'body' : bodyReq
       };
 
-      console.log(bodyReq)
-
       es_search.search(reqParam).then(function(result){
-        self.total = result.hits.total;
         each(result.hits.hits, function (value, key, array) {
-          self.movieResult.push(value._source)
+          let itemMovie = value._source;
+          itemMovie._score = value._score
+          self.movieResult.push(itemMovie)
         })
       })
     },
@@ -182,7 +182,7 @@
               term: {
                 genreAlt: "성인물"
               }
-            }
+            },
           }
         },
         aggs : {
@@ -257,8 +257,18 @@
      * 사용자의 질의 검색
      */
     goSearch : function () {
+      this.initPage();
       this.focusOut();
       this.startSearch();
+    },
+    getFilterWords : function () {
+      let filterWords = {
+        match: {
+          companys: '(주)영화사가을'
+        },
+
+      }
+      return filterWords;
     },
     /**
      * 자동완성 결과 검색
@@ -268,6 +278,7 @@
         size: 10,
         query: {
           bool: {
+             filter : [],
              should: {
                match: {
                  movieNm: this.userQuery
@@ -276,6 +287,9 @@
           }
         }
       }
+
+      let filterWords = this.getFilterWords();
+      bodyReq.query.bool.filter.must_not = filterWords;
 
       const self = this;
       const reqParam = {
@@ -300,7 +314,7 @@
      */
     startSearch : function () {
       let bodyReq = this.setSearchParam();
-      this.movieResult = []
+      this.movieResult = [];
       this.search('movie', bodyReq)
     },
     /**
@@ -311,49 +325,46 @@
       let bodyReq = {
         from : this.from,
         size : this.size,
-        sort : [
-          { 'prdtYear' : {order : 'desc'}},
-          {"_id": "desc"}
-        ],
-        query: {
-          bool: {
-            // must : {
-            //   match : {
-            //     genreAlt : this.userSelected
-            //   }
-            // },
-            must_not : {
-              match : {
-                genreAlt : "성인물"
-              }
-            },
-            // should: {
-            //   match: {
-            //     movieNm: this.userQuery
-            //   }
-            // },
+        query:{
+          bool:{
+            filter : [],
           }
         }
       }
 
-      if(this.userSelected !== '') {
+      let filterWords = this.getFilterWords();
+      bodyReq.query.bool.filter.must_not = filterWords;
+
+      if(this.userSelected !== '' && this.userQuery !== ''){
+        let genreUserQuery = {
+          match: {
+            genreAlt: this.userSelected
+          }
+        };
+        let userQuery = {
+          match: {
+            movieNm: this.userQuery
+          }
+        };
+        bodyReq.query.bool.must = genreUserQuery;
+        bodyReq.query.bool.should = userQuery;
+
+      } else if(this.userSelected !== '') {
         let genreAltQuery = {
           match: {
             genreAlt: this.userSelected
           }
         };
         bodyReq.query.bool.must = genreAltQuery;
-      }
 
-      if(this.userQuery !== '') {
+      } else{
         let userQuery = {
-            match: {
-              movieNm: this.userQuery
-            }
+          match: {
+            movieNm: this.userQuery
+          }
         };
-        bodyReq.query.bool.should = userQuery;
+        bodyReq.query.bool.must = userQuery;
       }
-
       return bodyReq;
     },
     /**
@@ -394,8 +405,7 @@
     selectAutocompleteKeyword : function (movie) {
       this.userQuery = movie.movieNm
       this.autoCompleteList = [];
-      //TODO : 자동완성어 검색
-      //this.startSearch();
+      this.goSearch();
     }
   }
 

@@ -67,7 +67,6 @@
       },
       startBulkInsert : function () {
         this.getDataFromJSON();
-        //TODO : 장르는 Array 형태로 색인하도록
         const self = this;
         each(this.movieResult, function (value, key, array) {
           if(value.genreAlt !== ""){

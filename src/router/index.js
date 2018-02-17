@@ -16,7 +16,6 @@ import { Navbar } from 'bootstrap-vue/es/components';
 Vue.use(Router)
 Vue.use(Navbar)
 
-//TODO : URL 수정
 export default new Router({
   routes: [
     {

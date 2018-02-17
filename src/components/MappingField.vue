@@ -135,7 +135,8 @@
           nationAlt : fieldSetting.keyword,
           genreAlt : fieldSetting.keyword,
           repNationNm : fieldSetting.keyword,
-          repGenreNm : fieldSetting.keyword
+          repGenreNm : fieldSetting.keyword,
+          companys : fieldSetting.keyword
         }
 
         this.reqBody = JSON.stringify(fieldArray, undefined, 2);

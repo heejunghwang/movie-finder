@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable="md" type="dark" variant="dark">
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-    <b-navbar-brand href="#"></b-navbar-brand>
+    <b-navbar-brand href="#"><img src="../assets/javacafe-logo-kor.png" style="width: 100px"></b-navbar-brand>
     <b-collapse is-nav id="nav_collapse">
       <b-navbar-nav>
         <div v-for="item in menuArray">
