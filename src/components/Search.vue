@@ -25,16 +25,19 @@
         <br>
 
         <div class="col-lg-9">
-          <!-- 검색-->
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for..." v-on:input="typeKeyword" v-bind:value="userQuery" @blur="focusOut" @keydown="moveAutocopleteItem">
-            <span class="input-group-btn">
-              <button class="btn btn-secondary" type="button" @click="typeKeyword">Go!</button>
-            </span>
+          <div v-on-clickaway="focusOut">
+            <!-- 검색-->
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search for..." v-on:input="typeKeyword" v-bind:value="userQuery" @keydown="moveAutocopleteItem"> <!-- @blur="focusOut" -->
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button" @click="goSearch">Go!</button>
+              </span>
+            </div>
+            <!-- 자동완성-->
+            <ul class="suggestion">
+              <li v-for="movie in autoCompleteList" @click="selectAutocompleteKeyword(movie)">{{ movie.movieNm }}</li>
+            </ul>
           </div>
-          <ul class="suggestion">
-            <li v-for="movie in movieResult" @click="selectAutocompleteKeyword(movie)">{{ movie.movieNm }} ({{movie.prdtYear}})</li>
-          </ul>
 
           <!-- 검색 결과-->
           <p style="float:right">총 : {{ commaNumber(total) }} 건</p>
@@ -77,11 +80,15 @@
   import es_search from '../api/search.js';
   const each = require('foreach');
   const commaNumber = require('comma-number')
+  import { directive as onClickaway } from 'vue-clickaway';
 
   export default {
   name: 'Search',
   created : function () {
     this.init();
+  },
+  directives: {
+    onClickaway: onClickaway,
   },
   data () {
     return {
@@ -92,6 +99,7 @@
       from : 0,
       size : 20,
       uniqueGenre : '',
+      autoCompleteList : [],
       movieResult : []/* [{
         "movieCd":"20173732",
         "movieNm":"살아남은 아이",
@@ -142,10 +150,10 @@
       // this.startSearch();
       this.getUniqueSearch();
     },
-    search : function (bodyReq) {
+    search : function (indexName, bodyReq) {
       const self = this;
       const reqParam = {
-        'index' : this.indexName,
+        'index' : indexName,
         'body' : bodyReq
       };
 
@@ -238,21 +246,62 @@
     },
 
     /**
-     * 키워드 검색 시
+     * 키워드 검색 시 자동완성어 검색
      * @param e
      */
     typeKeyword : function (e) {
-      this.initPage();
       this.userQuery = e.target.value;
+      this.getAutoCompleteResult();
+    },
+    /**
+     * 사용자의 질의 검색
+     */
+    goSearch : function () {
+      this.focusOut();
       this.startSearch();
     },
+    /**
+     * 자동완성 결과 검색
+     */
+    getAutoCompleteResult : function () {
+      let bodyReq = {
+        size: 10,
+        query: {
+          bool: {
+             should: {
+               match: {
+                 movieNm: this.userQuery
+               }
+             },
+          }
+        }
+      }
+
+      const self = this;
+      const reqParam = {
+        'index' : 'movie_autocomplete',
+        'body' : bodyReq
+      };
+
+      self.autoCompleteList = [];
+
+      if(this.userQuery !== null && this.userQuery !== ""){
+        es_search.search(reqParam).then(function(result){
+          each(result.hits.hits, function (value, key, array) {
+            self.autoCompleteList.push(value._source)
+          })
+        })
+      }
+
+    },
+
     /**
      * 검색을 한다
      */
     startSearch : function () {
       let bodyReq = this.setSearchParam();
       this.movieResult = []
-      this.search(bodyReq)
+      this.search('movie', bodyReq)
     },
     /**
      * 검색 파라미터 세팅
@@ -313,15 +362,15 @@
     searchMore : function () {
       this.from = this.from + this.size;
       let bodyReq = this.setSearchParam();
-      this.search(bodyReq)
+      this.search('movie', bodyReq)
     },
     /**
-     * 자동완성 포커스 아웃 시
+     * 자동완성 포커스 아웃 시 suggestion 초기화
      */
-    focusOut : function () {
-      //TODO : 자동완성 포커스 벗어낫을때 suggestion 초기화
-      console.log("포커스 아웃")
+    focusOut : function (e) {
+      this.autoCompleteList = [];
     },
+
     moveAutocopleteItem : function (e) {
       //TODO : 키보드 움직였을 때
       //left
@@ -338,13 +387,15 @@
       }
       //bottom
       else if(event.keyCode == 40) {
+
         console.log("bottom")
       }
     },
     selectAutocompleteKeyword : function (movie) {
       this.userQuery = movie.movieNm
-      //TODO : 자동완성 영역 없애기
-      this.startSearch();
+      this.autoCompleteList = [];
+      //TODO : 자동완성어 검색
+      //this.startSearch();
     }
   }
 
@@ -371,5 +422,10 @@
 
   .suggestion li:last-child {
     border: none;
+  }
+
+
+  .suggestion li:hover {
+    background-color: #F3F0DC;
   }
 </style>

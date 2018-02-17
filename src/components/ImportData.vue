@@ -11,31 +11,7 @@
       <button @click="startBulkInsert" class="btn btn-link"> <img src="../assets/import-icon.png" style="width: 80px"></button>
       <div style="background: lightgray">
         <span style="font-weight:bold">SAMPLE JSON</span>
-        <code>
-          <pre>
-          {
-            "movieCd":"20173732",
-            "movieNm":"살아남은 아이",
-            "movieNmEn":"Last Child",
-            "prdtYear":"2017",
-            "openDt":"",
-            "typeNm":"장편",
-            "prdtStatNm":"기타",
-            "nationAlt":"한국",
-            "genreAlt":"드라마,가족",
-            "repNationNm":"한국",
-            "repGenreNm":"드라마",
-            "directors":[
-            {
-            "peopleNm":"신동석"
-            }
-            ],
-            "companys":[
-
-            ]
-          }
-          </pre>
-        </code>
+        <textarea rows="20" cols="30" readonly="readonly" class="form-control">{{ sampleData }}</textarea>
       </div>
     </div>
     <!-- //end of container-->
@@ -51,18 +27,46 @@
   export default {
     name: 'ImportData',
     created : function () {
-      this.getDataFromJSON()
+      this.setSampleData()
     },
     data () {
       return {
+        sampleData : '',
         movieResult : ''
       }
     },
     methods : {
+      setSampleData : function () {
+        const sampleData = {
+          "movieCd":"20173732",
+          "movieNm":"살아남은 아이",
+          "movieNmEn":"Last Child",
+          "prdtYear":"2017",
+          "openDt":"",
+          "typeNm":"장편",
+          "prdtStatNm":"기타",
+          "nationAlt":"한국",
+          "genreAlt":"드라마,가족",
+          "repNationNm":"한국",
+          "repGenreNm":"드라마",
+          "directors":[
+            {
+              "peopleNm":"신동석"
+            }
+          ],
+          "companys":[
+
+          ]
+        };
+
+        this.sampleData = JSON.stringify(sampleData, undefined, 2);
+
+      },
       getDataFromJSON : function () {
         this.movieResult = rawData.movieListResult.movieList;
       },
       startBulkInsert : function () {
+        this.getDataFromJSON();
         //TODO : 장르는 Array 형태로 색인하도록
         const self = this;
         each(this.movieResult, function (value, key, array) {
@@ -78,6 +82,7 @@
         })
 
         es_bulk.bulkIndex('movie', 'info', self.movieResult);
+        es_bulk.bulkIndex('movie_autocomplete', 'info', self.movieResult);
 
       }
     }

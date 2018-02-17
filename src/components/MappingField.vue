@@ -11,12 +11,9 @@
           <textarea class="form-control" rows="35" cols="30" readonly="true">{{ propertiesInfo }}</textarea>
         </div>
 
-        <div class="col-lg-auto">
+        <div class="col">
           <h3>{{indexName}} 필드 매핑</h3>
           <form>
-            <div class="form-group row">
-
-            </div>
             <div class="form-group row">
               <label for="inputIndexName" class="col-sm-2 col-form-label">Index 이름</label>
               <div class="col-sm-10">
@@ -27,6 +24,19 @@
               <label for="inputTypeName" class="col-sm-2 col-form-label">Type 이름</label>
               <div class="col-sm-10">
                 <input class="form-control" aria-label="Text input" id="inputTypeName" v-model="typeName">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="inputTypeName" class="col-sm-2 col-form-label">필드분석기</label>
+              <div class="col-sm-10">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" id="inlineRadio1" value="sEunjeon" v-model="fieldAnalyzer" @click="setSEunjeonFeilds">
+                  <label class="form-check-label" for="inlineRadio1">은전한닢s</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" id="inlineRadio2" value="jamo" v-model="fieldAnalyzer" @click="setJamoFields">
+                  <label class="form-check-label" for="inlineRadio2">자모분석기</label>
+                </div>
               </div>
             </div>
             <div class="form-group row">
@@ -62,12 +72,17 @@
         indexName : '',
         typeName : '',
         reqBody : '',
-        propertiesInfo : ''
+        propertiesInfo : '',
+        fieldAnalyzer : '',
       }
     },
     methods : {
-      initValue : function () {
-        this.typeName = 'info'
+      getFieldSetting : function () {
+        const sEunjeonAnalyzer = {
+          type: "text",
+          analyzer : "korean",
+          search_analyzer : "korean"
+        }
 
         const jmoAnalyzer = {
           type: 'text',
@@ -75,35 +90,59 @@
           search_analyzer : 'hangul_jamo_search_analyzer'
         }
 
-        const defaultSetting = {
+        const keyword = {
           type: 'keyword',
           null_value: 'NULL',
         }
 
-        const prdtYearForamt = {
+        const yearForamt = {
           type : 'integer',
           null_value : '0'
         }
 
-        const openDtForamt = {
-          type : 'integer',
-          null_value : '0'
+        const fieldSetting = {
+          keyword : keyword,
+          jmoAnalyzer : jmoAnalyzer,
+          yearForamt : yearForamt,
+          sEunjeonAnalyzer : sEunjeonAnalyzer
         }
+        return fieldSetting;
+      },
+
+      setJamoFields : function () {
+        this.fieldAnalyzer = 'jamo'
+        const fieldSetting = this.getFieldSetting();
 
         const fieldArray = {
-          movieNm : jmoAnalyzer,
-          movieNmEn : jmoAnalyzer,
-          prdtYear : prdtYearForamt,
-          openDt : openDtForamt,
-          typeNm : defaultSetting,
-          prdtStatNm : defaultSetting,
-          nationAlt : defaultSetting,
-          genreAlt : defaultSetting,
-          repNationNm : defaultSetting,
-          repGenreNm : defaultSetting
+          movieNm : fieldSetting.jmoAnalyzer,
+          movieNmEn : fieldSetting.jmoAnalyzer
         }
 
         this.reqBody = JSON.stringify(fieldArray, undefined, 2);
+      },
+
+      setSEunjeonFeilds : function () {
+        this.fieldAnalyzer = 'sEunjeon'
+        const fieldSetting = this.getFieldSetting();
+
+        const fieldArray = {
+          movieNm : fieldSetting.sEunjeonAnalyzer,
+          movieNmEn : fieldSetting.sEunjeonAnalyzer,
+          prdtYear : fieldSetting.yearForamt,
+          openDt : fieldSetting.yearForamt,
+          typeNm : fieldSetting.keyword,
+          prdtStatNm : fieldSetting.keyword,
+          nationAlt : fieldSetting.keyword,
+          genreAlt : fieldSetting.keyword,
+          repNationNm : fieldSetting.keyword,
+          repGenreNm : fieldSetting.keyword
+        }
+
+        this.reqBody = JSON.stringify(fieldArray, undefined, 2);
+      },
+
+      initValue : function () {
+        this.typeName = 'info'
       },
       getIndexMapping : function () {
         const indexName  = this.indexName;

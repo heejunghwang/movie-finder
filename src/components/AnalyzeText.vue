@@ -22,19 +22,19 @@
 
       <!-- 분석기 종류-->
       <div class="form-check">
-        <input class="form-check-input" type="radio" id="analyzer1" v-model="analyzer" value="korean">
+        <input class="form-check-input" type="radio" id="analyzer1" v-model="analyzer" value="korean" @click="setAnalyzer('korean')">
         <label class="form-check-label" for="analyzer1">
           s은전한닢
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" id="analyzer2" v-model="analyzer" value="hangul_chosung_analyzer">
+        <input class="form-check-input" type="radio" id="analyzer2" v-model="analyzer" value="hangul_chosung_analyzer" @click="setAnalyzer('chosung')">
         <label class="form-check-label" for="analyzer2">
           초성분석
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" id="analyzer3" v-model="analyzer" value="hangul_jamo_analyzer">
+        <input class="form-check-input" type="radio" id="analyzer3" v-model="analyzer" value="hangul_jamo_analyzer" @click="setAnalyzer('jamo')">
         <label class="form-check-label" for="analyzer3">
           자모분석
         </label>
@@ -75,6 +75,13 @@
         es_indices.analyze(this.indexName, this.analyzer, this.testText).then(function(result){
           self.tokens = result.tokens;
         })
+      },
+      setAnalyzer : function (analyzer) {
+        if(analyzer == 'korean'){
+            this.indexName = 'movie'
+        }else{
+          this.indexName = 'movie_autocomplete'
+        }
       }
     }
   }
