@@ -251,7 +251,11 @@
      */
     typeKeyword : function (e) {
       this.userQuery = e.target.value;
-      this.getAutoCompleteResult();
+      if(this.userQuery === ""){
+        this.autoCompleteList = [];
+      }else{
+        this.getAutoCompleteResult();
+      }
     },
     /**
      * 사용자의 질의 검색
@@ -275,6 +279,7 @@
      */
     getAutoCompleteResult : function () {
       let bodyReq = {
+        from : 0,
         size: 10,
         query: {
           bool: {
@@ -297,10 +302,9 @@
         'body' : bodyReq
       };
 
-      self.autoCompleteList = [];
-
       if(this.userQuery !== null && this.userQuery !== ""){
         es_search.search(reqParam).then(function(result){
+          self.autoCompleteList = [];
           each(result.hits.hits, function (value, key, array) {
             self.autoCompleteList.push(value._source)
           })

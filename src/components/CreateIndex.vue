@@ -112,7 +112,7 @@
                 analyzer:{
                   korean : {
                     type : "custom",
-                      tokenizer:"seunjeon_default_tokenizer"
+                    tokenizer:"seunjeon_default_tokenizer"
                   }
                 },
                 tokenizer: {

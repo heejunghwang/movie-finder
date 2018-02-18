@@ -24,6 +24,7 @@ export default {
         console.log("finish to import data")
       }else{
         console.log("fail to import data")
+        console.log(result)
       }
     });
   },

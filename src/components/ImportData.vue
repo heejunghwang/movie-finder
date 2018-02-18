@@ -27,7 +27,7 @@
   export default {
     name: 'ImportData',
     created : function () {
-      this.setSampleData()
+      this.setSampleData();
     },
     data () {
       return {
@@ -69,7 +69,7 @@
         this.getDataFromJSON();
         const self = this;
         each(this.movieResult, function (value, key, array) {
-          if(value.genreAlt !== ""){
+          if(value.genreAlt !== "" && value.genreAlt !== null && typeof value.genreAlt !== 'undefined'){
             // Array 형태로 담기 위해서 슬래시(/)나 괄호로 되어 있는 장르명을 치환시켜줍니다
             value.genreAlt = value.genreAlt.replace("/", ",");
             value.genreAlt = value.genreAlt.replace("(", ",");
@@ -82,6 +82,7 @@
 
         es_bulk.bulkIndex('movie', 'info', self.movieResult);
         es_bulk.bulkIndex('movie_autocomplete', 'info', self.movieResult);
+
 
       }
     }

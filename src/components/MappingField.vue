@@ -92,7 +92,7 @@
 
         const keyword = {
           type: 'keyword',
-          null_value: 'NULL',
+          null_value: 'NULL'
         }
 
         const yearForamt = {
@@ -130,13 +130,7 @@
           movieNmEn : fieldSetting.sEunjeonAnalyzer,
           prdtYear : fieldSetting.yearForamt,
           openDt : fieldSetting.yearForamt,
-          typeNm : fieldSetting.keyword,
-          prdtStatNm : fieldSetting.keyword,
-          nationAlt : fieldSetting.keyword,
-          genreAlt : fieldSetting.keyword,
-          repNationNm : fieldSetting.keyword,
-          repGenreNm : fieldSetting.keyword,
-          companys : fieldSetting.keyword
+          genreAlt : fieldSetting.keyword
         }
 
         this.reqBody = JSON.stringify(fieldArray, undefined, 2);
