@@ -174,7 +174,8 @@
         aggs : {
           uniq_genre : {
             terms : {
-              field : "genreAlt"
+              field : "genreAlt",
+              size: 10000
             }
           },
         }
