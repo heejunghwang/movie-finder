@@ -52,5 +52,4 @@ export default new Router({
   ]
 })
 
-//TODO : 컴포넌트 등록 위치 변경
 Vue.component('Menu', Menu);

@@ -69,6 +69,10 @@
       }
     },
     methods : {
+      /**
+       * Analyze Text using analyzer
+       * 텍스트를 분석기를 통해 분석한다
+       */
       analyzeText : function () {
         const self = this;
         self.tokens = '';
@@ -76,9 +80,15 @@
           self.tokens = result.tokens;
         })
       },
+
+      /**
+       * Analyzer Setting
+       * 분석기를 설정한다
+       * @param analyzer
+       */
       setAnalyzer : function (analyzer) {
         if(analyzer == 'korean'){
-            this.indexName = 'movie'
+          this.indexName = 'movie'
         }else{
           this.indexName = 'movie_autocomplete'
         }

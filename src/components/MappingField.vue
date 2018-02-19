@@ -77,6 +77,17 @@
       }
     },
     methods : {
+      /**
+       * 타입의 초기값을 설정한다.
+       */
+      initValue : function () {
+        this.typeName = 'info'
+      },
+
+      /**
+       * 필드 매핑 설정 정보를 조회한다.
+       * @returns {{keyword: {type: string, null_value: string}, jmoAnalyzer: {type: string, analyzer: string, search_analyzer: string}, yearForamt: {type: string, null_value: string}, sEunjeonAnalyzer: {type: string, analyzer: string, search_analyzer: string}}}
+       */
       getFieldSetting : function () {
         const sEunjeonAnalyzer = {
           type: "text",
@@ -109,6 +120,9 @@
         return fieldSetting;
       },
 
+      /**
+       * 필드 매핑를 자모 분석기로 설정한다.
+       */
       setJamoFields : function () {
         this.fieldAnalyzer = 'jamo'
         const fieldSetting = this.getFieldSetting();
@@ -121,6 +135,9 @@
         this.reqBody = JSON.stringify(fieldArray, undefined, 2);
       },
 
+      /**
+       * 필드 매핑를 s은전한닢 분석기로 설정한다.
+       */
       setSEunjeonFeilds : function () {
         this.fieldAnalyzer = 'sEunjeon'
         const fieldSetting = this.getFieldSetting();
@@ -136,9 +153,9 @@
         this.reqBody = JSON.stringify(fieldArray, undefined, 2);
       },
 
-      initValue : function () {
-        this.typeName = 'info'
-      },
+      /**
+       * 인덱스 필드 매핑 정보를 조회한다.
+       */
       getIndexMapping : function () {
         const indexName  = this.indexName;
         const self = this;
@@ -146,6 +163,10 @@
           self.propertiesInfo = JSON.stringify(result, undefined, 2);
         })
       },
+
+      /**
+       * 인덱스 필드 매핑을 설정한다.
+       */
       putFieldMapping : function () {
         const indexName  = this.indexName;
         const typeName = this.typeName;

@@ -27,10 +27,10 @@
         <li class="list-group-item list-group-item-secondary" style="font-weight: bold"><img src="../assets/list.png" style="width:20px;margin-right:5px">Index List</li>
         <div v-for="item in indexList">
           <a href="#" class="list-group-item list-group-item-action" >
-          <img src="../assets/index.icon.png" style="width:40px;margin-right: 10px">
-            <span style="font-weight: bold">{{ item }}</span>
-          <router-link :to="'./mapping-index?indexName='+item"><img src="../assets/manage.png" style="width:20px;"></router-link>
-          <a v-on:click="deleteIndex(item)"><img src="../assets/delete.png" style="width:15px"></a>
+            <img src="../assets/index.icon.png" style="width:40px;margin-right: 10px">
+              <span style="font-weight: bold">{{ item.index }} ( {{ commaNumber(item.docs_count) }} )</span>
+            <router-link :to="'./mapping-index?indexName='+item.index"><img src="../assets/manage.png" style="width:20px;"></router-link>
+            <a v-on:click="deleteIndex(item.index)"><img src="../assets/delete.png" style="width:15px"></a>
           </a>
         </div>
       </div>
@@ -51,6 +51,7 @@
   import es_cat from '../api/cat.js';
   import es_indices from '../api/indices.js';
   import router from '../router'
+  const commaNumber = require('comma-number')
 
   export default {
     name: 'Manage',
@@ -66,7 +67,7 @@
     },
     methods : {
       /**
-       * 연결 상태 확인
+       * 연결 상태 확인한다.
        */
       getElasticsearchHealth : function () {
         let self = this;
@@ -81,7 +82,7 @@
           }, 3000);
       },
       /**
-       * 전체 인덱스 리스트 조회
+       * 전체 인덱스 리스트 조회한다.
        */
       getIndexList : function () {
         let self = this;
@@ -90,7 +91,7 @@
         })
       },
       /**
-       * 인덱스 삭제
+       * 인덱스 삭제를 한다.
        * @param indexName
        */
       deleteIndex : function (indexName) {
@@ -103,7 +104,7 @@
         }
       },
       /**
-       * 인덱스 매핑 설정
+       * 인덱스 매핑 설정을 한다.
        * @param indexName
        */
       mappingIndex : function (indexName) {
@@ -112,7 +113,14 @@
           query: {indexName: indexName},
         });
 
-      }
+      },
+      /**
+       * 콤마 표시를 한다.
+       * @param number
+       */
+      commaNumber : function (number) {
+        return commaNumber(number)
+      },
     }
   }
 </script>

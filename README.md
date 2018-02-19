@@ -1,8 +1,49 @@
 # movie-finder
 
-## 데이터 출처 : 영화관입장권통합전산망 오픈 API (영화진흥위원회)
-
 > A Vue.js project
+> Elasticsearch 를 활용하여 '영화'를 검색을 하는 프로젝트
+
+## Prerequirement (실행 전 준비사항)
+
+### Java 8 설치
+
+### Elasticsearch 6.0.0 이상 버전 설치
+  * [엘라스틱서치 공식 홈페이지 다운로드 페이지](https://www.elastic.co/downloads/past-releases)
+  * [Elasticsearch 설치 방법](https://www.elastic.co/guide/en/elasticsearch/reference/6.0/_installation.html)
+
+### Elasticsearch 분석기(Analyzer) 플러그인 설치
+
+   (1) s은전한닢
+   * 설치방법 : https://bitbucket.org/eunjeon/seunjeon/src/d2c16421897cd76ef2edab451d674d81b0a14a00/elasticsearch/?at=master
+   
+   (2) 자모 분석기
+   * 링크 : https://github.com/punxism/elasticsearch-hangul-jamo-plugin 에서 소스 다운로드
+   * `/src/mainresources/plugin-descriptor.properties` 수정
+     ~~~
+      elasticsearch.version=6.0.0 (해당 엘라스틱서치 버전에 맞게 수정)
+     ~~~
+     
+   * `pom.xml` 수정 (해당 엘라스틱서치 버전에 맞게 루씬, 엘라스틱서치 수정)
+     ~~~ xml
+      <properties>
+          <elasticsearch.version>6.0.0</elasticsearch.version>
+          <lucene.version>7.0.1</lucene.version>
+      </properties>
+     ~~~
+     
+     * 빌드 후 설치
+     ~~~ bash
+      mvn clean package
+     ~~~
+     
+     * 플러그인 설치
+     ~~~ bash
+      ${elasticsearch.home}/bin/elasticsearch-plugin install file://${project.basedir}/target/releases/elasticsearch-hangul-jamo-analyzer-{version}.zip
+     ~~~
+  
+### npm 설치
+  * 링크 : https://nodejs.org/ko/
+  * 8.9.4 이상
 
 ## Build Setup
 
@@ -38,21 +79,34 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 /router : 라우팅 관련 폴더
  ~~~ 
 
-## 그외
-* 사용한 형태소 분석기
-- s은전한닢
-- 한글 초성검색 자모 분석 플러그인 : https://github.com/punxism/elasticsearch-hangul-jamo-plugin
-
-## 버전 정보
-* Java 8
-* elasticsearch-6.1.3
-* Node.js : 8.9.4
-
 ### 추가 자료 : TODO
 * 동영상
-* 캡쳐
 
-#### 지원 브라우저 : Chrome
+### 예제 사용 방법
+  (1). 인덱스 생성
+  * `Manage` 메뉴에서 `Create Index` 클릭 후, `movie` 생성
+  * `Manage` 메뉴에서 `Create Index` 클릭 후, `movie_autocomplete` 생성
+  
+  (2) 필드 매핑 설정
+  * `Manage` 메뉴에서 `movie`에서 설정 버튼을 클릭 후, `은전한닢s` 클릭 후 필드 매핑 생성
+  * `Manage` 메뉴에서 `movie_autocomplete`에서 설정 버튼을 클릭 후, `자모분석기` 클릭 후 필드 매핑 생성
+  
+  (3) 데이터 색인
+  * `ImportData` 메뉴에서 import 그림 클릭
+  
+  (4) 검색
+  * `Search` 탭에서 검색 결과 확인
+  
+  (5) 분석기 확인
+  * `AnalyzeText` 메뉴에서 분석기 확인
 
-## 자바카페 블로그 : http://tech.javacafe.io/
-## 자바카페 git : https://github.com/JAVACAFE-STUDY
+
+#### 지원 브라우저(Support Browser)
+* Chrome, Firefox, Safari
+
+## 데이터 출처
+* 영화관입장권통합전산망 오픈 API (영화진흥위원회)
+
+## Additional Link
+* 자바카페 블로그 : http://tech.javacafe.io/
+* 자바카페 git : https://github.com/JAVACAFE-STUDY

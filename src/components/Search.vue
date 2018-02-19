@@ -34,14 +34,13 @@
             </div>
             <!-- 자동완성-->
             <ul class="suggestion">
-              <li v-for="movie in autoCompleteList" @click="selectAutocompleteKeyword(movie)">{{ movie.movieNm }}</li>
+              <li v-for="movie in autoCompleteList" @mouseover="mouseOverAutocomplete(movie)" @click="selectAutocompleteKeyword(movie)" v-bind:class="{active:movie.active}">{{ movie.movieNm }}</li>
             </ul>
           </div>
 
           <!-- 검색 결과-->
           <table class="table table-striped" v-if="movieResult !== ''">
             <th>이름</th>
-            <th>영문이름</th>
             <th>장르</th>
             <th>타입</th>
             <th>개봉년도</th>
@@ -50,9 +49,8 @@
             <tbody>
             <tr v-for="movie in movieResult">
               <td>{{ movie.movieNm }}</td>
-              <td>{{ movie.movieNmEn }}</td>
               <td>
-                <span v-for="genre in movie.genreAlt">{{ genre }},</span>
+                <span v-for="genre in movie.genreAlt" class="comma">{{ genre }}</span>
               </td>
               <td>{{ movie.typeNm }}</td>
               <td>{{ movie.prdtYear }}</td>
@@ -146,32 +144,23 @@
     }
   },
   methods : {
+    /**
+     * 초기값으로 설정한다.
+     */
     init : function () {
       this.movieResult = [];
-      // this.startSearch();
       this.getUniqueSearch();
     },
-    search : function (indexName, bodyReq) {
-      const self = this;
-      const reqParam = {
-        'index' : indexName,
-        'body' : bodyReq
-      };
 
-      es_search.search(reqParam).then(function(result){
-        each(result.hits.hits, function (value, key, array) {
-          let itemMovie = value._source;
-          itemMovie._score = value._score
-          self.movieResult.push(itemMovie)
-        })
-      })
-    },
-
+    /**
+     * 숫자에 콤마 표시를 한다.
+     */
     commaNumber : function (number) {
       return commaNumber(number)
     },
+
     /**
-     * 장르별 메뉴 조회
+     * 장르별 메뉴 조회를 한다.
      */
     getUniqueSearch : function () {
       let bodyReq = {
@@ -204,8 +193,9 @@
         self.uniqueGenre = result.aggregations.uniq_genre.buckets
       })
     },
+
     /**
-     * 장르 선택 초기화
+     * 장르 선택 초기화를 한다.
      */
     initGenre : function () {
       this.initPage();
@@ -215,12 +205,14 @@
       this.userSelected = ''
       this.startSearch()
     },
+
     /**
-     * 페이징 초기화
+     * 페이징 초기화을 한다.
      */
     initPage : function () {
       this.from = 0;
     },
+
     /**
      * 장르 클릭
      * @param item
@@ -257,6 +249,7 @@
         this.getAutoCompleteResult();
       }
     },
+
     /**
      * 사용자의 질의 검색
      */
@@ -265,17 +258,40 @@
       this.focusOut();
       this.startSearch();
     },
-    getFilterWords : function () {
-      let filterWords = {
-        match: {
-          companys: '(주)영화사가을'
-        },
 
-      }
+    /**
+     * 필터링 할 단어를 가져온다.
+     */
+    getFilterWords : function () {
+      let filterWords = [
+        {match: {"companys.companyNm":"(주)영화사가을"}},
+        {match: {"companys.companyNm":"스마일컨텐츠"}},
+        {match: {"companys.companyNm":"(주)리필름"}},
+        {match: {"companys.companyNm":"영화사 인연"}},
+        {match: {"companys.companyNm":"너바나 필름"}},
+        {match: {"companys.companyNm":"배드픽쳐스"}},
+        {match: {"companys.companyNm":"이돌영화사"}},
+        {match: {"companys.companyNm":"전망 PRODUCTION"}},
+        {match: {"companys.companyNm":"무비집"}},
+        {match: {"companys.companyNm":"엠아이픽쳐스 "}},
+        {match: {"companys.companyNm":"블루스필름"}},
+        {match: {"companys.companyNm":"핵존슨"}},
+        {match: {"companys.companyNm":"모히또필름"}},
+        {match: {"companys.companyNm":"에이원 미디어"}},
+        {match: {"companys.companyNm":"제이프러스미디어"}},
+        {match: {"companys.companyNm":"에이원 미디어"}},
+        {match: {"companys.companyNm":"윤스"}},
+        {match: {"companys.companyNm":"(유)조이앤컨텐츠그룹"}},
+        {match: {"companys.companyNm":"(유)쏘아필름"}},
+        {match: {"companys.companyNm":"주식회사 레드아이스"}},
+        {match: {"companys.companyNm":"신필름"}},
+        {match: {"companys.companyNm":"시네마테크 충무로"}}
+      ]
       return filterWords;
     },
+
     /**
-     * 자동완성 결과 검색
+     * 자동완성 결과 검색을 한다.
      */
     getAutoCompleteResult : function () {
       let bodyReq = {
@@ -294,7 +310,7 @@
       }
 
       let filterWords = this.getFilterWords();
-      bodyReq.query.bool.filter.must_not = filterWords;
+      bodyReq.query.bool.must_not = filterWords;
 
       const self = this;
       const reqParam = {
@@ -310,19 +326,19 @@
           })
         })
       }
-
     },
 
     /**
-     * 검색을 한다
+     * 검색을 시작 한다
      */
     startSearch : function () {
       let bodyReq = this.setSearchParam();
       this.movieResult = [];
       this.search('movie', bodyReq)
     },
+
     /**
-     * 검색 파라미터 세팅
+     * 검색 파라미터 세팅을 한다.
      * @returns {{from: number, size: number, sort: *[], query: {bool: {must_not: {match: {genreAlt: string}}}}}}
      */
     setSearchParam : function () {
@@ -337,7 +353,7 @@
       }
 
       let filterWords = this.getFilterWords();
-      bodyReq.query.bool.filter.must_not = filterWords;
+      bodyReq.query.bool.must_not = filterWords;
 
       if(this.userSelected !== '' && this.userQuery !== ''){
         let genreUserQuery = {
@@ -369,43 +385,154 @@
         };
         bodyReq.query.bool.must = userQuery;
       }
+
       return bodyReq;
     },
+
     /**
-     * 더보기 클릭 시
+     * 엘라스틱서치 검색 API 호출을 한다
+     */
+    search : function (indexName, bodyReq) {
+      const self = this;
+      const reqParam = {
+        'index' : indexName,
+        'body' : bodyReq
+      };
+
+      es_search.search(reqParam).then(function(result){
+        each(result.hits.hits, function (value, key, array) {
+          let itemMovie = value._source;
+          itemMovie._score = value._score
+          self.movieResult.push(itemMovie)
+        })
+      })
+    },
+
+    /**
+     * 더보기 리스트를 조회한다.
      */
     searchMore : function () {
       this.from = this.from + this.size;
       let bodyReq = this.setSearchParam();
       this.search('movie', bodyReq)
     },
+
     /**
-     * 자동완성 포커스 아웃 시 suggestion 초기화
+     * 자동완성 포커스 아웃 시 자동완성을 초기화를 한다.
      */
     focusOut : function (e) {
       this.autoCompleteList = [];
     },
 
+    /**
+     * 자동완성에서 위, 아래 버튼을 누를 경우, 자동완성 포커스를 이동한다.
+     */
     moveAutocopleteItem : function (e) {
-      //TODO : 키보드 움직였을 때
       //left
       if(event.keyCode == 37) {
-        console.log("left")
+        this.goDownKeyword();
       }
       //top
       else if(event.keyCode == 38) {
-        console.log("top")
+        this.goUpKeyword();
       }
       //right
       else if(event.keyCode == 39) {
-        console.log("right")
+        this.goDownKeyword();
       }
       //bottom
       else if(event.keyCode == 40) {
-
-        console.log("bottom")
+        this.goDownKeyword();
       }
     },
+
+    /**
+     * 자동완성 펼친 상태에서 아래 버튼 누를시 포커스 이동을 한다.
+     * @returns {boolean}
+     */
+    goDownKeyword : function () {
+      const self = this;
+      if(this.autoCompleteList !== [] && this.autoCompleteList !== null && this.autoCompleteList !== ''){
+        if(typeof this.autoCompleteList.selected == "undefined"){
+          each(this.autoCompleteList, function (value, key, array) {
+            if(key == 0){
+              value.active = true;
+              self.userQuery = value.movieNm
+              self.autoCompleteList.selected = key;
+            }
+          })
+        }else if((self.autoCompleteList.selected+2) > this.autoCompleteList.length){
+          return false;
+        }else{
+          self.autoCompleteList.selected = self.autoCompleteList.selected + 1;
+          each(this.autoCompleteList, function (value, key, array) {
+            if(key == self.autoCompleteList.selected){
+              value.active = true;
+              self.userQuery = value.movieNm
+              self.autoCompleteList.selected = key;
+            }else{
+              value.active = false;
+            }
+          })
+        }
+        this.$forceUpdate()
+      }
+    },
+
+    /**
+     * 자동완성 펼친 상태에서 위 버튼 누를시 포커스 이동을 한다.
+     * @returns {boolean}
+     */
+    goUpKeyword : function () {
+      const self = this;
+      if(this.autoCompleteList !== [] && this.autoCompleteList !== null && this.autoCompleteList !== ''){
+        if(typeof this.autoCompleteList.selected == "undefined"){
+          each(this.autoCompleteList, function (value, key, array) {
+            if(key == 0){
+              value.active = true;
+              self.userQuery = value.movieNm
+              self.autoCompleteList.selected = key;
+            }
+          })
+        }else if(self.autoCompleteList.selected == 0){
+          return false;
+        }else{
+          self.autoCompleteList.selected = self.autoCompleteList.selected - 1;
+          each(this.autoCompleteList, function (value, key, array) {
+            if(key == self.autoCompleteList.selected){
+              value.active = true;
+              self.userQuery = value.movieNm
+              self.autoCompleteList.selected = key;
+            }else{
+              value.active = false;
+            }
+          })
+        }
+        this.$forceUpdate()
+      }
+    },
+
+    /**
+     *  자동완성어 리스트에 마우스 올릴 때 커서를 해당 자동완성어로 이동한다.
+     * @param movie
+     */
+    mouseOverAutocomplete : function (movie) {
+      const self = this;
+      each(this.autoCompleteList, function (value, key, array) {
+        if(movie.movieCd == value.movieCd){
+          value.active = true;
+          self.autoCompleteList.selected = key;
+        }else{
+          value.active = false;
+        }
+      })
+      this.$forceUpdate()
+    },
+
+    /**
+     * 자동완성어 클릭시 검색을 한다.
+     * @param movie
+     */
     selectAutocompleteKeyword : function (movie) {
       this.userQuery = movie.movieNm
       this.autoCompleteList = [];
@@ -414,7 +541,6 @@
   }
 
 }
-
 
 </script>
 
@@ -438,8 +564,12 @@
     border: none;
   }
 
-
-  .suggestion li:hover {
+  .suggestion .active{
     background-color: #F3F0DC;
   }
+
+  .comma:not(:empty) ~ .comma:not(:empty):before {
+    content: ", ";
+  }
+
 </style>

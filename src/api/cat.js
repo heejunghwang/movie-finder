@@ -2,10 +2,13 @@ import elasticsearchClient from './elasticsearchConnection.js';
 
 /**
  * ElasticSearch Cat API
- * @type {{getIndexInfoList: module.exports.getIndexInfoList, getIndexList: module.exports.getIndexList}}
  */
 
 export default {
+  /**
+   * 인덱스 정보를 조회를 한다.
+   * @returns {Promise<any>}
+   */
   getIndexInfoList : function () {
       return new Promise(function (resolve, reject) {
         elasticsearchClient.cat.indices({format:'json'}, function (err,resp,status) {
@@ -19,14 +22,25 @@ export default {
         return resp;
       });
   },
+
+  /**
+   * 인덱스 이름, 카운트 조회를 한다.
+   * @returns {Promise<T>}
+   */
   getIndexList : function () {
     return this.getIndexInfoList().then(function(result) {
       let indexList = new Array();
       for (let [k, v] of Object.entries(result)) {
-        indexList.push(v.index)
+        let value = JSON.parse(JSON.stringify(v).split(".").join("_"));
+        let item = {
+          index : value.index,
+          docs_count : value.docs_count
+        }
+        indexList.push(item)
       }
       return indexList;
     });
   }
+
 };
 

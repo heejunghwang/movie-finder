@@ -34,6 +34,10 @@
     },
 
     methods : {
+      /**
+       * 해당 메뉴로 이동한다.
+       * @param menuName
+       */
       goMenu : function (menuName) {
         const self = this;
         each(this.menuArray, function (value, key, array) {

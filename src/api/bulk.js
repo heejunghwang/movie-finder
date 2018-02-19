@@ -5,7 +5,18 @@ import elasticsearchClient from './elasticsearchConnection.js';
 
 const each = require('foreach');
 
+/**
+ * Elasticsearch bulk API
+ */
+
 export default {
+  /**
+   * bulk 인덱싱을 한다.
+   * @param indexName
+   * @param typeName
+   * @param bulkDocument
+   * @returns {*|PromiseLike<T>|Promise<T>}
+   */
   bulkIndex : function (indexName, typeName, bulkDocument) {
     let reqParam = new Array();
     let bulkFormat = {
@@ -21,13 +32,19 @@ export default {
     });
     return this.startBulkInsert(reqParam).then(function (result) {
       if(result.errors == false){
-        console.log("finish to import data")
+        alert("finish to import data")
       }else{
-        console.log("fail to import data")
+        alert("fail to import data")
         console.log(result)
       }
     });
   },
+
+  /**
+   * bulk 인덱싱 엘라스틱 서치 API 호출을 한다.
+   * @param reqParam
+   * @returns {Promise<any>}
+   */
   startBulkInsert : function (reqParam) {
     return new Promise(function (resolve, reject) {
       elasticsearchClient.bulk({

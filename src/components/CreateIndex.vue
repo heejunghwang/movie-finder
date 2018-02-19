@@ -59,10 +59,16 @@
       }
     },
     methods : {
+      /**
+       * 화면 로딩시 기본값을 설정한다.
+       */
       setDefaultValue : function () {
         this.indexName = 'movie'
         this.setKoreanSEunjeonAnalyzer();
       },
+      /**
+       * 인덱스 리스트를 조회한다
+       */
       getIndexList : function () {
         let self = this;
         es_cat.getIndexList().then(function(result){
@@ -70,7 +76,7 @@
         })
       },
       /**
-       * 인덱스 생성
+       * 인덱스 생성을 한다.
        */
       createNewIndex : function () {
         const indexName = this.indexName;
@@ -82,7 +88,7 @@
         });
       },
       /**
-       * 인덱스 삭제
+       * 인덱스 삭제를 한다.
        * @param indexName
        */
       deleteIndex : function (indexName) {
@@ -95,7 +101,7 @@
         }
       },
       /**
-       * 인덱스 매핑 설정
+       * 인덱스 매핑 설정을 한다.
        * @param indexName
        */
       mappingIndex : function (indexName) {
@@ -129,6 +135,9 @@
 
         this.reqBody = JSON.stringify(sEunjeonAnalyzer, undefined, 4);
       },
+      /**
+       * 한글 자모분석기를 설정한다.
+       */
       setKoreanJamoAnalyzer : function () {
         const koreanJamoAnalyzer = {
           settings : {

@@ -1,12 +1,15 @@
 import ElasticsearchConfig from '../../config/elasticsearch.env.js'
 
-/**
- * 엘라스틱 서치 연결을 위한 모듈
- * @type {es}
- */
-
 const elasticsearch = require('elasticsearch');
 
+/**
+ * Elasticsearch Client API
+ */
+
+/**
+ * 엘라스틱 서치 클라이언트 객체를 가져온다.
+ * @type {elasticsearch.Client}
+ */
 const elasticsearchClient = new elasticsearch.Client({
   host: ElasticsearchConfig.elasticsearch_host,
   cors : true,
