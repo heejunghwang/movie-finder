@@ -181,9 +181,7 @@
         }
       }
 
-
-      let filterWords = this.getFilterWords();
-      bodyReq.query.bool.must_not = filterWords;
+      bodyReq.query.bool.must_not = this.getFilterWords();
 
       const reqParam = {
         'index' : this.indexName,
@@ -313,8 +311,7 @@
         }
       }
 
-      let filterWords = this.getFilterWords();
-      bodyReq.query.bool.must_not = filterWords;
+      bodyReq.query.bool.must_not = this.getFilterWords();
 
       const self = this;
       const reqParam = {
@@ -356,8 +353,7 @@
         }
       }
 
-      let filterWords = this.getFilterWords();
-      bodyReq.query.bool.must_not = filterWords;
+      bodyReq.query.bool.must_not = this.getFilterWords()
 
       if(this.userSelected !== '' && this.userQuery !== ''){
         let genreUserQuery = {
@@ -424,14 +420,14 @@
     /**
      * 자동완성 포커스 아웃 시 자동완성을 초기화를 한다.
      */
-    focusOut : function (e) {
+    focusOut : function () {
       this.autoCompleteList = [];
     },
 
     /**
      * 자동완성에서 위, 아래 버튼을 누를 경우, 자동완성 포커스를 이동한다.
      */
-    moveAutocopleteItem : function (e) {
+    moveAutocopleteItem : function () {
       //left
       if(event.keyCode == 37) {
         this.goDownKeyword();
