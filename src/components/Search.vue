@@ -168,9 +168,6 @@
         query: {
           bool: {
             must_not: {
-              term: {
-                genreAlt: "성인물"
-              }
             },
           }
         },
@@ -182,6 +179,10 @@
           },
         }
       }
+
+
+      let filterWords = this.getFilterWords();
+      bodyReq.query.bool.must_not = filterWords;
 
       const reqParam = {
         'index' : this.indexName,
@@ -264,6 +265,8 @@
      */
     getFilterWords : function () {
       let filterWords = [
+        {match: {"genreAlt":"성인물"}},
+        {match: {"genreAlt":"에로"}},
         {match: {"companys.companyNm":"(주)영화사가을"}},
         {match: {"companys.companyNm":"스마일컨텐츠"}},
         {match: {"companys.companyNm":"(주)리필름"}},
