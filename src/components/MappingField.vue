@@ -86,13 +86,19 @@
 
       /**
        * 필드 매핑 설정 정보를 조회한다.
-       * @returns {{keyword: {type: string, null_value: string}, jmoAnalyzer: {type: string, analyzer: string, search_analyzer: string}, yearForamt: {type: string, null_value: string}, sEunjeonAnalyzer: {type: string, analyzer: string, search_analyzer: string}}}
        */
       getFieldSetting : function () {
         const sEunjeonAnalyzer = {
           type: "text",
           analyzer : "korean",
           search_analyzer : "korean"
+        }
+
+        const sEunjeonBoostAnalyzer = {
+          type: "text",
+          analyzer : "korean",
+          search_analyzer : "korean",
+          boost : 2
         }
 
         const jmoAnalyzer = {
@@ -115,8 +121,10 @@
           keyword : keyword,
           jmoAnalyzer : jmoAnalyzer,
           yearForamt : yearForamt,
-          sEunjeonAnalyzer : sEunjeonAnalyzer
+          sEunjeonAnalyzer : sEunjeonAnalyzer,
+          sEunjeonBoostAnalyzer : sEunjeonBoostAnalyzer
         }
+
         return fieldSetting;
       },
 
@@ -143,7 +151,7 @@
         const fieldSetting = this.getFieldSetting();
 
         const fieldArray = {
-          movieNm : fieldSetting.sEunjeonAnalyzer,
+          movieNm : fieldSetting.sEunjeonBoostAnalyzer,
           movieNmEn : fieldSetting.sEunjeonAnalyzer,
           prdtYear : fieldSetting.yearForamt,
           openDt : fieldSetting.yearForamt,

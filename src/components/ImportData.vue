@@ -21,7 +21,6 @@
 
 <script>
 
-  import rawData from '../rawdata/searchMovieList_1.json';
   import es_bulk from '../api/bulk.js';
   const each = require('foreach');
 
@@ -73,6 +72,7 @@
        * @param indexName
        */
       clickBulkIndex : function(indexName){
+        this.fileSeq = 0;
         this.startBulkIndex(indexName);
       },
 
@@ -91,7 +91,6 @@
        * JSON 데이터를 정제한다
        */
       refineData : function () {
-        const self = this;
         each(this.movieResult, function (value, key, array) {
           if(value.genreAlt !== "" && value.genreAlt !== null && typeof value.genreAlt !== 'undefined'){
             // Array 형태로 담기 위해서 슬래시(/)나 괄호로 되어 있는 장르명을 치환시켜줍니다

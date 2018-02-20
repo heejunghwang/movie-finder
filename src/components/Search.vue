@@ -21,9 +21,7 @@
           </ul>
         </div>
 
-        <br>
-
-        <div class="col-lg-9">
+        <div class="col-lg-9" style="margin-top: 20px">
           <div v-on-clickaway="focusOut">
             <!-- 검색-->
             <div class="input-group">

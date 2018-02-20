@@ -91,6 +91,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
   
   (4) 검색
   * `Search` 탭에서 검색 결과 확인
+  ![image](./static/ex_search.PNG)
   
   (5) 분석기 확인
   * `AnalyzeText` 메뉴에서 분석기 확인
@@ -120,7 +121,11 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ~~~ 
 
 ## 참고
-* 엘라스틱서치와 movie-finder 프로젝트가 한 서버에 있는 경우, No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 메시지 해결 방법
+* 엘라스틱서치와 movie-finder 프로젝트가 한 서버에 있는 경우, CORS 설정 필요
+~~~
+No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin ~~~
+~~~
+
 * elasticserach_home/config/elasticsearch.yml 파일에서 아래 추가
 ~~~
 http.cors.enabled: true
