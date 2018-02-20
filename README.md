@@ -119,6 +119,16 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 /router : 라우팅 관련 폴더
 ~~~ 
 
+## 참고
+* 엘라스틱서치와 movie-finder 프로젝트가 한 서버에 있는 경우, No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 메시지 해결 방법
+* elasticserach_home/config/elasticsearch.yml 파일에서 아래 추가
+~~~
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+http.cors.allow-methods: OPTIONS, HEAD, GET, POST, PUT, DELETE
+http.cors.allow-headers: "X-Requested-With,X-Auth-Token,Content-Type, Content-Length, Authorization"
+~~~
+
 
 ## 지원 브라우저(Support Browser)
 * Chrome, Firefox, Safari

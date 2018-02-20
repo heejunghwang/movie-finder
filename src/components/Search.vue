@@ -427,7 +427,7 @@
     /**
      * 자동완성에서 위, 아래 버튼을 누를 경우, 자동완성 포커스를 이동한다.
      */
-    moveAutocopleteItem : function () {
+    moveAutocopleteItem : function (event) {
       //left
       if(event.keyCode == 37) {
         this.goDownKeyword();

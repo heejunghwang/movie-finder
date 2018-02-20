@@ -8,8 +8,8 @@
     <!--container-->
     <div class="container">
       <h1>Import Data from JSON file</h1>
-      <button @click="clickBulkInsert('movie')" class="btn btn-link"> <img src="../assets/import-icon.png" style="width: 80px"><h2>movie</h2></button>
-      <button @click="clickBulkInsert('movie_autocomplete')" class="btn btn-link"> <img src="../assets/import-icon.png" style="width: 80px"><h2>movie_autocomplete</h2></button>
+      <button @click="clickBulkIndex('movie')" class="btn btn-link"> <img src="../assets/import-icon.png" style="width: 80px"><h2>movie</h2></button>
+      <button @click="clickBulkIndex('movie_autocomplete')" class="btn btn-link"> <img src="../assets/import-icon.png" style="width: 80px"><h2>movie_autocomplete</h2></button>
       <div style="background: lightgray">
         <span style="font-weight:bold">SAMPLE JSON</span>
         <textarea rows="20" cols="30" readonly="readonly" class="form-control">{{ sampleData }}</textarea>
@@ -29,12 +29,12 @@
     name: 'ImportData',
     created : function () {
       this.showSampleData();
-      this.getDataFromJSON();
     },
     data () {
       return {
         sampleData : '',
-        movieResult : ''
+        movieResult : '',
+        fileSeq : 0,
       }
     },
     methods : {
@@ -67,24 +67,35 @@
         this.sampleData = JSON.stringify(sampleData, undefined, 2);
 
       },
-      /**
-       * JSON 데이터를 가져온다.
-       */
-      getDataFromJSON : function () {
-        this.movieResult = rawData.movieListResult.movieList;
-      },
 
       /**
        * Bulk 색인을 클릭한다.
        * @param indexName
        */
-      clickBulkInsert : function(indexName){
+      clickBulkIndex : function(indexName){
+        this.startBulkIndex(indexName);
+      },
+
+      /**
+       * JSON 데이터를 가져온다.
+       */
+      getDataFromJSON : function () {
+        this.fileSeq = this.fileSeq + 1;
+        this.movieResult = [];
+        let movieRawList = require('../rawdata/searchMovieList_'+ this.fileSeq + '.json');
+        this.movieResult = movieRawList.movieListResult.movieList;
+        this.refineData()
+      },
+
+      /**
+       * JSON 데이터를 정제한다
+       */
+      refineData : function () {
         const self = this;
         each(this.movieResult, function (value, key, array) {
           if(value.genreAlt !== "" && value.genreAlt !== null && typeof value.genreAlt !== 'undefined'){
             // Array 형태로 담기 위해서 슬래시(/)나 괄호로 되어 있는 장르명을 치환시켜줍니다
             value.genreAlt = value.genreAlt.toString();
-
             value.genreAlt = value.genreAlt.split("/").join(",");
             value.genreAlt = value.genreAlt.split("(").join(",");
             value.genreAlt = value.genreAlt.split(")").join(",");
@@ -93,15 +104,24 @@
             value.genreAlt = temp;
           }
         })
-        this.startBulkInsert(indexName);
       },
 
       /**
        * Bulk 색인을 시작한다.
        * @param indexName
        */
-      startBulkInsert : function (indexName) {
-        es_bulk.bulkIndex(indexName, 'info', this.movieResult);
+      startBulkIndex : function (indexName) {
+        const self = this;
+        console.log("start to import data of " + indexName)
+        this.getDataFromJSON();
+        es_bulk.bulkIndex(indexName, 'info', this.movieResult).then(function(result){
+          if(result == true){
+            console.log('####### finish to import data of ' + indexName + ' ' + self.fileSeq)
+            if(self.fileSeq < 7){
+              self.startBulkIndex(indexName);
+            }
+          }
+        });
       },
 
 

@@ -30,12 +30,13 @@ export default {
         reqParam.push(bulkFormat)
         reqParam.push(value)
     });
-    return this.startBulkInsert(reqParam).then(function (result) {
+    return this.startBulkIndex(reqParam).then(function (result) {
       if(result.errors == false){
-        alert("finish to import data")
+        return true;
       }else{
         alert("fail to import data")
         console.log(result)
+        return false;
       }
     });
   },
@@ -45,7 +46,7 @@ export default {
    * @param reqParam
    * @returns {Promise<any>}
    */
-  startBulkInsert : function (reqParam) {
+  startBulkIndex : function (reqParam) {
     return new Promise(function (resolve, reject) {
       elasticsearchClient.bulk({
         body: reqParam
