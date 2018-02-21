@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build": "node --max_old_space_size=8000 build/build.js"
   },
   "dependencies": {
     "bootstrap": "^4.0.0",
