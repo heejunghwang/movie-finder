@@ -17,7 +17,7 @@ export default {
    * @param bulkDocument
    * @returns {*|PromiseLike<T>|Promise<T>}
    */
-  bulkIndex : function (indexName, typeName, bulkDocument) {
+  bulkIndex (indexName, typeName, bulkDocument) {
     let reqParam = new Array();
     let bulkFormat = {
       index : {
@@ -26,11 +26,11 @@ export default {
       }
     };
     bulkFormat = JSON.stringify(bulkFormat)
-    each(bulkDocument, function (value, key, array) {
+    each(bulkDocument, (value, key, array) => {
         reqParam.push(bulkFormat)
         reqParam.push(value)
     });
-    return this.startBulkIndex(reqParam).then(function (result) {
+    return this.startBulkIndex(reqParam).then((result) => {
       if(result.errors == false){
         return true;
       }else{
@@ -46,18 +46,18 @@ export default {
    * @param reqParam
    * @returns {Promise<any>}
    */
-  startBulkIndex : function (reqParam) {
-    return new Promise(function (resolve, reject) {
+  startBulkIndex (reqParam) {
+    return new Promise((resolve, reject) => {
       elasticsearchClient.bulk({
         body: reqParam
-      },function(err,resp,status) {
+      },(err,resp,status) => {
         if(status == '200') {
           resolve(resp);
         }else{
           reject(err);
         }
       });
-    }).then(function (resp) {
+    }).then( (resp) => {
       return resp;
     });
   }

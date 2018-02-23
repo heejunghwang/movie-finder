@@ -9,16 +9,16 @@ export default {
    * 인덱스 정보를 조회를 한다.
    * @returns {Promise<any>}
    */
-  getIndexInfoList : function () {
-      return new Promise(function (resolve, reject) {
-        elasticsearchClient.cat.indices({format:'json'}, function (err,resp,status) {
+  getIndexInfoList () {
+      return new Promise((resolve, reject) => {
+        elasticsearchClient.cat.indices({format:'json'}, (err,resp,status) => {
           if(status == '200') {
             resolve(resp);
           }else{
             reject(err);
           }
         })
-      }).then(function (resp) {
+      }).then((resp) => {
         return resp;
       });
   },
@@ -27,11 +27,11 @@ export default {
    * 인덱스 이름, 카운트 조회를 한다.
    * @returns {Promise<T>}
    */
-  getIndexList : function () {
-    return this.getIndexInfoList().then(function(result) {
+  getIndexList () {
+    return this.getIndexInfoList().then((result) => {
       let indexList = new Array();
       for (let [k, v] of Object.entries(result)) {
-        let value = JSON.parse(JSON.stringify(v).split(".").join("_"));
+        let value = JSON.parse(JSON.stringify(v).replace(/\./g, '_'));
         let item = {
           index : value.index,
           docs_count : value.docs_count

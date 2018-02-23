@@ -136,7 +136,7 @@ http.cors.allow-headers: "X-Requested-With,X-Auth-Token,Content-Type, Content-Le
 
 
 ## 지원 브라우저(Support Browser)
-* Chrome, Firefox, Safari
+* Chrome
 
 
 ### 추가 자료 : TODO

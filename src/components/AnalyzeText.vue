@@ -76,7 +76,7 @@
       analyzeText : function () {
         const self = this;
         self.tokens = '';
-        es_indices.analyze(this.indexName, this.analyzer, this.testText).then(function(result){
+        es_indices.analyze(this.indexName, this.analyzer, this.testText).then((result)=>{
           self.tokens = result.tokens;
         })
       },

@@ -71,7 +71,7 @@
        */
       getIndexList : function () {
         let self = this;
-        es_cat.getIndexList().then(function(result){
+        es_cat.getIndexList().then((result)=>{
           self.indexList = result;
         })
       },
@@ -81,7 +81,7 @@
       createNewIndex : function () {
         const indexName = this.indexName;
         const reqBody = this.reqBody;
-        es_indices.createIndex(indexName, reqBody).then(function(result){
+        es_indices.createIndex(indexName, reqBody).then((result) => {
           if(typeof result !== 'undefined' && result !== null && result.acknowledged === true){
             window.location.reload(true);
           }
@@ -93,7 +93,7 @@
        */
       deleteIndex : function (indexName) {
         if(confirm(indexName+"를 정말 삭제하겠습니까?")){
-          es_indices.deleteIndex(indexName).then(function(result){
+          es_indices.deleteIndex(indexName).then( (result) =>{
             if(typeof result !== 'undefined' && result !== null && result.acknowledged === true){
               window.location.reload(true);
             }

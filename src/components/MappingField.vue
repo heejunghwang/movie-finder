@@ -167,7 +167,7 @@
       getIndexMapping : function () {
         const indexName  = this.indexName;
         const self = this;
-        es_indices.getMapping(indexName).then(function(result){
+        es_indices.getMapping(indexName).then((result) => {
           self.propertiesInfo = JSON.stringify(result, undefined, 2);
         })
       },
@@ -180,7 +180,7 @@
         const typeName = this.typeName;
         const reqBody = JSON.parse(this.reqBody);
 
-        es_indices.putMapping(indexName, typeName, reqBody).then(function (result) {
+        es_indices.putMapping(indexName, typeName, reqBody).then( (result) => {
           if(typeof result !== 'undefined' && result !== null && result.acknowledged === true){
             window.location.reload(true);
           }

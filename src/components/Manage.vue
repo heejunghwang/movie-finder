@@ -47,7 +47,7 @@
 
 <script>
 
-  import elasticsearchClient from '../api/elasticsearchConnection.js';
+  import es_cluster from '../api/cluster.js';
   import es_cat from '../api/cat.js';
   import es_indices from '../api/indices.js';
   import router from '../router'
@@ -72,13 +72,9 @@
       getElasticsearchHealth : function () {
         let self = this;
           setInterval(function() {
-              elasticsearchClient.cluster.health({},function(err,resp,status) {
-                if(status == '200') {
-                  self.clientHealth = resp;
-                }else{
-                  self.clientHealth = null;
-                }
-              });
+            es_cluster.getClusterHealth().then((result) => {
+              self.clientHealth = result;
+            })
           }, 3000);
       },
       /**
@@ -86,7 +82,7 @@
        */
       getIndexList : function () {
         let self = this;
-        es_cat.getIndexList().then(function(result){
+        es_cat.getIndexList().then((result) => {
           self.indexList = result;
         })
       },
@@ -96,7 +92,7 @@
        */
       deleteIndex : function (indexName) {
         if(confirm(indexName+"를 정말 삭제하겠습니까?")){
-          es_indices.deleteIndex(indexName).then(function(result){
+          es_indices.deleteIndex(indexName).then((result) => {
             if(typeof result !== 'undefined' && result !== null && result.acknowledged === true){
               window.location.reload(true);
             }

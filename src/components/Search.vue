@@ -187,7 +187,7 @@
       };
 
       const self = this;
-      es_search.search(reqParam).then(function(result){
+      es_search.search(reqParam).then((result)=>{
         self.uniqueGenre = result.aggregations.uniq_genre.buckets
       })
     },
@@ -197,7 +197,7 @@
      */
     initGenre : function () {
       this.initPage();
-      each(this.uniqueGenre, function (value, key, array) {
+      each(this.uniqueGenre, (value, key, array) =>{
         value.active = false;
       })
       this.userSelected = ''
@@ -219,7 +219,7 @@
       this.initPage();
       const self = this;
       self.userSelected = item.key;
-      each(this.uniqueGenre, function (value, key, array) {
+      each(this.uniqueGenre, (value, key, array) => {
         if(item.key === value.key){
           if(value.active == true){
             value.active = false;
@@ -318,9 +318,9 @@
       };
 
       if(this.userQuery !== null && this.userQuery !== ""){
-        es_search.search(reqParam).then(function(result){
+        es_search.search(reqParam).then((result) => {
           self.autoCompleteList = [];
-          each(result.hits.hits, function (value, key, array) {
+          each(result.hits.hits, (value, key, array) => {
             self.autoCompleteList.push(value._source)
           })
         })
@@ -397,8 +397,8 @@
         'body' : bodyReq
       };
 
-      es_search.search(reqParam).then(function(result){
-        each(result.hits.hits, function (value, key, array) {
+      es_search.search(reqParam).then((result)=>{
+        each(result.hits.hits, (value, key, array) => {
           let itemMovie = value._source;
           itemMovie._score = value._score
           self.movieResult.push(itemMovie)
@@ -485,7 +485,7 @@
       const self = this;
       if(this.autoCompleteList !== [] && this.autoCompleteList !== null && this.autoCompleteList !== ''){
         if(typeof this.autoCompleteList.selected == "undefined"){
-          each(this.autoCompleteList, function (value, key, array) {
+          each(this.autoCompleteList, (value, key, array) => {
             if(key == 0){
               value.active = true;
               self.userQuery = value.movieNm
@@ -496,7 +496,7 @@
           return false;
         }else{
           self.autoCompleteList.selected = self.autoCompleteList.selected - 1;
-          each(this.autoCompleteList, function (value, key, array) {
+          each(this.autoCompleteList, (value, key, array) => {
             if(key == self.autoCompleteList.selected){
               value.active = true;
               self.userQuery = value.movieNm
@@ -516,7 +516,7 @@
      */
     mouseOverAutocomplete : function (movie) {
       const self = this;
-      each(this.autoCompleteList, function (value, key, array) {
+      each(this.autoCompleteList, (value, key, array) => {
         if(movie.movieCd == value.movieCd){
           value.active = true;
           self.autoCompleteList.selected = key;

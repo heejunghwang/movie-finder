@@ -1,21 +1,16 @@
 import elasticsearchClient from './elasticsearchConnection.js';
 
-/**
- * Elasticsearch search API
- */
-
 export default {
   /**
-   * 사용자의 질의 조회를 한다.
-   * @param reqParam
+   * 엘라스틱서치 클러스터 health 상태를 조회를 한다.
    * @returns {Promise<any>}
    */
-  search (reqParam) {
+  getClusterHealth () {
     return new Promise((resolve, reject) => {
-      elasticsearchClient.search(reqParam, (err, resp, status) =>{
-        if (status == '200') {
+      elasticsearchClient.cluster.health({}, (err,resp,status) => {
+        if(status == '200') {
           resolve(resp);
-        } else {
+        }else{
           reject(err);
         }
       })
@@ -23,5 +18,5 @@ export default {
       return resp;
     });
   }
-};
 
+};

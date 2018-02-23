@@ -91,7 +91,7 @@
        * JSON 데이터를 정제한다
        */
       refineData : function () {
-        each(this.movieResult, function (value, key, array) {
+        each(this.movieResult, (value, key, array) => {
           if(value.genreAlt !== "" && value.genreAlt !== null && typeof value.genreAlt !== 'undefined'){
             // Array 형태로 담기 위해서 슬래시(/)나 괄호로 되어 있는 장르명을 치환시켜줍니다
             value.genreAlt = value.genreAlt.toString();
@@ -113,7 +113,7 @@
         const self = this;
         console.log("start to import data of " + indexName)
         this.getDataFromJSON();
-        es_bulk.bulkIndex(indexName, 'info', this.movieResult).then(function(result){
+        es_bulk.bulkIndex(indexName, 'info', this.movieResult).then((result) => {
           if(result == true){
             console.log('####### finish to import data of ' + indexName + ' ' + self.fileSeq)
             if(self.fileSeq < 7){

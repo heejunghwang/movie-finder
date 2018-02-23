@@ -40,7 +40,7 @@
        */
       goMenu : function (menuName) {
         const self = this;
-        each(this.menuArray, function (value, key, array) {
+        each(this.menuArray, (value, key, array) => {
           if(value.name === self.$route.name){
             value.active = true;
           }else{

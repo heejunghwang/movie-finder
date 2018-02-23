@@ -10,19 +10,19 @@ export default {
    * @param reqBody
    * @returns {Promise<any>}
    */
-  createIndex : function (indexName, reqBody) {
-    return new Promise(function (resolve, reject) {
+  createIndex (indexName, reqBody) {
+    return new Promise((resolve, reject) => {
       elasticsearchClient.indices.create({
         index: indexName,
         body:reqBody
-      },function(err,resp,status) {
+      },(err,resp,status) =>{
         if(status == '200') {
           resolve(resp);
         }else{
           reject(err);
         }
       });
-    }).then(function (resp) {
+    }).then((resp) =>{
       return resp;
     });
   },
@@ -32,18 +32,18 @@ export default {
    * @param indexName
    * @returns {Promise<any>}
    */
-  deleteIndex : function (indexName) {
-    return new Promise(function (resolve, reject) {
+  deleteIndex (indexName) {
+    return new Promise((resolve, reject) => {
       elasticsearchClient.indices.delete({
         index: indexName
-      }, function (err, resp, status) {
+      }, (err, resp, status) => {
         if(status == '200') {
           resolve(resp);
         }else{
           reject(err);
         }
       });
-    }).then(function (resp) {
+    }).then((resp) => {
       return resp;
     });
   },
@@ -53,19 +53,19 @@ export default {
    * @param indexName
    * @returns {Promise<any>}
    */
-  getMapping : function (indexName) {
-    return new Promise(function (resolve, reject) {
+  getMapping (indexName) {
+    return new Promise((resolve, reject) => {
       elasticsearchClient.indices.getMapping({
         index: indexName,
         expandWildcards : "all"
-      }, function (err, resp, status) {
+      }, (err, resp, status) => {
         if(status == '200') {
           resolve(resp);
         }else{
           reject(err);
         }
       });
-    }).then(function (resp) {
+    }).then((resp) => {
       return resp;
     });
   },
@@ -77,22 +77,22 @@ export default {
    * @param reqBody
    * @returns {Promise<any>}
    */
-  putMapping : function (indexName, typeName, reqBody) {
-    return new Promise(function (resolve, reject) {
+  putMapping (indexName, typeName, reqBody) {
+    return new Promise((resolve, reject) => {
       elasticsearchClient.indices.putMapping({
         index: indexName,
         type: typeName,
         body: {
           properties : reqBody
         }
-      }, function (err, resp, status) {
+      }, (err, resp, status) =>{
         if(status == '200') {
           resolve(resp);
         }else{
           reject(err);
         }
       });
-    }).then(function (resp) {
+    }).then((resp) => {
       return resp;
     });
   },
@@ -104,22 +104,22 @@ export default {
    * @param text
    * @returns {Promise<any>}
    */
-  analyze : function (indexName, analyzer, text) {
-    return new Promise(function (resolve, reject) {
+  analyze (indexName, analyzer, text) {
+    return new Promise((resolve, reject) => {
       elasticsearchClient.indices.analyze({
         index: indexName,
         body : {
           analyzer : analyzer,
           text : text
         }
-      }, function (err, resp, status) {
+      }, (err, resp, status) => {
         if(status == '200') {
           resolve(resp);
         }else{
           reject(err);
         }
       });
-    }).then(function (resp) {
+    }).then((resp) => {
       return resp;
     });
   }
