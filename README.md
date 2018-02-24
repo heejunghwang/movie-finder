@@ -2,6 +2,10 @@
 > 오픈소스 검색엔진인 Elasticsearch 를 활용하여 '영화'를 검색을 하는 Vue.js 프로젝트
 
 
+# 예제
+* youtube link
+[![ElasticsearchWithElasticsearch](./static/youtube_example.png)](https://youtu.be/JEVCMqyYUL8 "ElasticsearchWithElasticsearch")
+
 
 ## 실행 전 준비사항
 
