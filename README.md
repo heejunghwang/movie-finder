@@ -138,10 +138,6 @@ http.cors.allow-headers: "X-Requested-With,X-Auth-Token,Content-Type, Content-Le
 ## 지원 브라우저(Support Browser)
 * Chrome
 
-
-### 추가 자료 : TODO
-* 동영상
-
 ## 데이터 출처
 * 영화관입장권통합전산망 오픈 API (영화진흥위원회)
 
