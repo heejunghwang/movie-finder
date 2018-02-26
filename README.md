@@ -125,7 +125,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 ~~~ 
 
 ## 참고
-* 엘라스틱서치와 movie-finder 프로젝트가 한 서버에 있는 경우, CORS 설정 필요
+* 엘라스틱서치와 movie-finder 프로젝트가 동일한 도메인이 아닐경우, CORS 설정 필요
 ~~~
 No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin ~~~
 ~~~
